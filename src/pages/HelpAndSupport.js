@@ -17,7 +17,6 @@ const HelpAndSupport = () => {
     }
 
     const handleCalls = async () => {
-        $('.calls').show('toggle')
         $('.call-bottom').animate({
             height: 'toggle'
         })
@@ -59,7 +58,7 @@ const HelpAndSupport = () => {
         </Link>
     </div>
     
-    <div className='calls'>
+    <div className='callss'>
     <div className='call-bottom'> 
      <icons.TelephoneFill className='call-icon'/>
      <p>Call us</p>

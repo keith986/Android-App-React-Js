@@ -30,7 +30,7 @@ const User = () => {
         </Link>
     </div>
     <div className='user-cols'>
-        <Link className='div'>
+        <Link to='/settings' className='div'>
             <icons.GearFill className='cart-icon'/>
             <h3>Settings</h3>
         </Link>

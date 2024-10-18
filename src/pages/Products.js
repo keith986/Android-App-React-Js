@@ -1,7 +1,7 @@
 import React from 'react'
-import sample from './images/sample.jpeg'
-import another from './images/another.jpeg'
-import yeet from './images/yeet.jpeg'
+import sample from '../images/sample.jpeg'
+import another from '../images/another.jpeg'
+import yeet from '../images/yeet.jpeg'
 
 const Products = () => {
   return (

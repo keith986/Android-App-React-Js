@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import * as icons from 'react-bootstrap-icons'
 import $ from 'jquery'
-import sample from './images/sample.jpeg'
-import another from './images/another.jpeg'
-import yeet from './images/yeet.jpeg'
+import sample from '../images/sample.jpeg'
+import another from '../images/another.jpeg'
+import yeet from '../images/yeet.jpeg'
 
 const Offers = () => {
 

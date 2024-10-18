@@ -641,6 +641,89 @@ overflow-x: hidden;
   opacity: 0.7;
 }
 
+#pswd, #fon, #loc {
+  display: none;
+}
+
+.mod{
+  margin: 10px;
+}
+
+.log-in{
+  display: flex;
+  justify-content: center;
+  max-width: 400px;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  min-height: 70vh;
+  max-height: 70vh;
+}
+
+.log-in > h1 {
+  text-shadow: 5px 5px 10px black;
+}
+
+.log-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.email, .password {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 0 1px 1px gray;
+}
+
+.submit{
+  width: 50%;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #000;
+  color: #ececec;
+  border: none;
+  cursor: pointer;
+  box-shadow: 5px 5px 10px black;
+}
+
+.submit:hover{
+ box-shadow: none;
+}
+
+#forgot-pswd {
+  text-decoration: none;
+  color: red;
+  font-size: 16px;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin: 10px;
+}
+
+#sign-up {
+  text-decoration: none;
+  color: blue;
+  font-size: 16px;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin: 10px;
+  font-family: Verdana;
+}
+
+.login-icn {
+  font-size: 50px;
+ 
+}
+
 @media  screen and (max-width: 700px) {
   .navbar{
     width: 100vw;
@@ -672,5 +755,14 @@ overflow-x: hidden;
     display: flex;
     justify-content: space-between;
     flex-direction: row;
+  }
+  .submit {
+    position: absolute;
+    bottom: 5%;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    border-radius: 30px;
+    border: none;
   }
 }

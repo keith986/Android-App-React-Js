@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import $ from 'jquery'
 import * as icons from 'react-bootstrap-icons'
-import sample from './images/sample.jpeg'
+import sample from '../images/sample.jpeg'
 
 const Cart = () => {
     const navigate = useNavigate()
@@ -33,8 +33,9 @@ const Cart = () => {
     }
 
     const handleLipa = () => {
-        $('.mpesa').animate({
-            height: 'toggle'
+        $('#payd').animate({
+            height: 'toggle',
+            show : 'toggle'
         })
     }
 
@@ -70,6 +71,8 @@ const Cart = () => {
        </div> 
        <icons.ChevronDown onClick={handleLipa} style={{fontSize: '20px'}} />
        </button>
+       
+       <div id='payd'>
        <div className='mpesa'>
         <h3>BUY GOOD AND SERVICES</h3>
         <div className='pay-bill'>
@@ -83,6 +86,8 @@ const Cart = () => {
         <p>Tech Store</p>
         <input type='text' className='tcode' placeholder='Enter Mpesa Transaction Code'/>
        </div>
+       </div>
+
       </div>
       <div className='modal-pay' style={{marginTop: '5px'}}>
       <button className='lipa'><div><input type='checkbox'/> Cash on Delivery</div> <icons.Wallet2 style={{fontSize: '20px'}}/></button>

@@ -1,22 +1,46 @@
 import { Route, Routes } from 'react-router-dom';
-import Footer from './Footer.js';
+import Footer from './pages/Footer.js';
 import './index.css'
-import Categories from './Categories.js';
-import Home from './Home.js';
-import Offers from './Offers.js';
-import Cart from './Cart.js'
-import User from './User.js';
-import Orders from './Orders.js';
-import Coupons from './Coupons.js';
-import HelpAndSupport from './HelpAndSupport.js';
-import ProductQuery from './ProductQuery.js';
-import Suggestions from './Suggestions.js';
-import Notifications from './Notifications.js';
+import Categories from './pages/Categories.js';
+import Home from './pages/Home.js';
+import Offers from './pages/Offers.js';
+import Cart from './pages/Cart.js'
+import User from './pages/User.js';
+import Orders from './pages/Orders.js';
+import Coupons from './pages/Coupons.js';
+import HelpAndSupport from './pages/HelpAndSupport.js';
+import ProductQuery from './pages/ProductQuery.js';
+import Suggestions from './pages/Suggestions.js';
+import Notifications from './pages/Notifications.js';
+import Settings from './pages/Settings.js';
+import Login from './pages/Logins.js';
+import LoginDirectory from './components/LoginDirectory/LoginDirectory.js';
+import FooterDirectory from './components/FooterDirectory/FooterDirectory.js';
+import { ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
     <>
       <div className='screen'>
+      <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme = "light"
+      />
+      <ToastContainer />
+
+      <LoginDirectory> 
+      <Login path='/login'/>
+      </LoginDirectory>
+
       <Routes>
         <Route element={<Home/>} path='/'/>
         <Route element={<Categories/>} path='/categories'/>
@@ -29,11 +53,15 @@ function App() {
         <Route element={<ProductQuery/>} path='/productquery'/>
         <Route element={<Suggestions/>} path='/suggestions'/>
         <Route element={<Notifications/>} path='/notifications'/>
+        <Route element={<Settings/>} path='/settings'/>
       </Routes>
       <div className='col-row'><span style={{marginTop: '50px', marginBottom: '20px'}}></span></div>
       </div>
+
+      <FooterDirectory>
       <Footer/>
-      
+      </FooterDirectory>
+
     </>
   );
 }

@@ -3,13 +3,13 @@ import { useLocation } from 'react-router-dom'
 
 const LoginDirectory = ({children}) => {
     const navigate = useLocation();
-    const [isLoc, setIsLoc] = useState(true);
+    const [isLoc, setIsLoc] = useState(false);
 
     useEffect(() => {
-        if(navigate.pathname !== '/login'){
-            setIsLoc(false)
+        if(navigate.pathname === '/login' || navigate.pathname === '/'){
+            setIsLoc(true)
         }else{
-          setIsLoc(true)
+          setIsLoc(false)
         }
     }, [navigate])
 

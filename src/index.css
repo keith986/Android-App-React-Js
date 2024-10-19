@@ -673,13 +673,14 @@ overflow-x: hidden;
   width: 100%;
 }
 
-.email, .password {
+.email, .password , .username{
   width: 100%;
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
   border: none;
+  outline: none;
   box-shadow: 0 0 1px 1px gray;
 }
 
@@ -721,10 +722,72 @@ overflow-x: hidden;
 
 .login-icn {
   font-size: 50px;
- 
+  box-shadow: 5px 5px 10px black;
+  padding: 10px;
+  border-radius: 5px;
 }
 
-@media  screen and (max-width: 700px) {
+.log-frst > h1 {
+  text-shadow: 5px 5px 10px black;
+}
+
+.log-row{
+  width: 700px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #ececec;
+}
+
+.log-frst{
+  text-align: center;
+  align-items: center;
+}
+
+#contry_code {
+  padding: 10px;
+  background-color: green;
+  color: #fff;
+  border: none;
+  outline: none;
+}
+
+#phone_code{
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.phone {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: none;
+  outline: none;
+  box-shadow: 0 0 1px 1px gray;
+}
+
+@media  screen and (min-width : 769px) {
+  .log-in > .login-icn {
+    display: none;
+  }
+  .log-in > h1 {
+    display: none;
+  }
+  .log-div {
+    border: 5px solid black;
+    border-top: none;
+    border-bottom:none;
+    border-right: none; 
+    padding: 20px;
+    width: 400px;
+  }
+}
+
+@media  screen and (max-width: 768px) {
   .navbar{
     width: 100vw;
     padding: 0;
@@ -765,4 +828,12 @@ overflow-x: hidden;
     border-radius: 30px;
     border: none;
   }
+  .log-row {
+    border: none;
+    display: block;
+  }
+  .log-frst{
+    display: none;
+  }
 }
+

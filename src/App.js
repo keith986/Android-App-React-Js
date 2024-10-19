@@ -18,13 +18,15 @@ import LoginDirectory from './components/LoginDirectory/LoginDirectory.js';
 import FooterDirectory from './components/FooterDirectory/FooterDirectory.js';
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SignupDirectory from './components/SignupDirectory/SignupDirectory.js';
+import Signup from './pages/Signup.js';
 
 function App() {
   return (
     <>
       <div className='screen'>
       <ToastContainer
-          position="top-right"
+        position="top-right"
           autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}
@@ -37,12 +39,16 @@ function App() {
       />
       <ToastContainer />
 
-      <LoginDirectory> 
+      <LoginDirectory>
       <Login path='/login'/>
       </LoginDirectory>
 
+      <SignupDirectory>
+        <Signup path='/signup'/>
+      </SignupDirectory>
+
       <Routes>
-        <Route element={<Home/>} path='/'/>
+        <Route element={<Home/>} path='/dashboard'/>
         <Route element={<Categories/>} path='/categories'/>
         <Route element={<Offers/>} path='/offers'/>
         <Route element={<Cart/>} path='/cart'/>
@@ -57,11 +63,9 @@ function App() {
       </Routes>
       <div className='col-row'><span style={{marginTop: '50px', marginBottom: '20px'}}></span></div>
       </div>
-
       <FooterDirectory>
       <Footer/>
       </FooterDirectory>
-
     </>
   );
 }

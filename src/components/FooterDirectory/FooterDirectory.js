@@ -3,20 +3,20 @@ import { useLocation } from 'react-router-dom';
 
 const FooterDirectory = ({Children}) => {
     const location = useLocation();
-    const [isLoc, setIsLoc] = useState(true);
+    const [isLocs, setIsLocs] = useState(false);
 
     useEffect(() => {
-        if(location.pathname !== '/login' && location.pathname !== '/signup'){
-            setIsLoc(true)
+        if(location.pathname === '/login' || location.pathname === '/signup' || location.pathname === '/'){
+            setIsLocs(false)
         }else{
-            setIsLoc(false)
+            setIsLocs(true)
         }
 
     }, [location])
 
   return (
     <>
-      {isLoc && Children}
+      {isLocs && Children}
     </>
   )
 }

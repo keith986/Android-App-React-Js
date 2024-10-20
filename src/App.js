@@ -20,6 +20,7 @@ import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SignupDirectory from './components/SignupDirectory/SignupDirectory.js';
 import Signup from './pages/Signup.js';
+import AdminDashboard from './pages/AdminDashboard.js';
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
 
       <Routes>
         <Route element={<Home/>} path='/dashboard'/>
+        <Route element={<AdminDashboard/>} path='/admin' />
         <Route element={<Categories/>} path='/categories'/>
         <Route element={<Offers/>} path='/offers'/>
         <Route element={<Cart/>} path='/cart'/>

@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import {auth} from '../firebase'
-import { signInWithEmailAndPassword } from "firebase/auth";
-import {toast} from 'react-toastify'
+import { auth } from '../firebase'
+import { signInWithEmailAndPassword, } from "firebase/auth";
+import { toast } from 'react-toastify'
 import { Link, useNavigate } from 'react-router-dom';
 import * as icon from 'react-bootstrap-icons'
 
 const Logins = () => {
 
-const navigate = useNavigate();
+const navigate = useNavigate()
 
 const [isCredentials, setIsCredientials] = useState({
   email : '',
@@ -21,7 +21,7 @@ const handleChange = (e) => {
 const handleSubmit = (e) => {
   e.preventDefault();
 signInWithEmailAndPassword(auth, isCredentials.email.toString(), isCredentials.password.toString())
- .then((userCredential) => {
+                          .then((userCredential) => {
     const user = userCredential.user;
     toast.success('successfully logged in.')
     console.log(user)
@@ -29,15 +29,19 @@ signInWithEmailAndPassword(auth, isCredentials.email.toString(), isCredentials.p
       setTimeout(() => {
         navigate('/dashboard')
       }, 5000)
+    }else{
+      setTimeout(() => {
+        navigate('/admin')
+      }, 5000)
     }
-  })
- .catch((error) => {
+                           })
+                          .catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
     console.log('ERROR_Code : ' + errorCode)
     console.log('ERROR_Message : ' + errorMessage)
     toast.error('wrong email or password!')
-  });
+                           });
 }
 
   return (

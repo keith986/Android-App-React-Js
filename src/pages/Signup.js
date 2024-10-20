@@ -5,22 +5,64 @@ import { db, auth } from '../firebase'
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from 'react-toastify'
 import bcrypt from 'bcryptjs';
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 const Signup = () => {
-    
-    const navigate = useNavigate();
+  
+  const navigate = useNavigate();
 
-    const salt = bcrypt.genSaltSync(10)
+  const salt = bcrypt.genSaltSync(10)
 
-    const [isCreate, setIsCreate] = useState({
+  const [isCreate, setIsCreate] = useState({
         username : '',
         email : '',
         ccode : '',
         phone : '',
         password : '',
         confirmpswd : ''
-    })
+  })
+
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({   
+    prompt : "select_account"
+  }); 
+  const handleGoogleSignIn = async () => {
+  const hashed_pswd = bcrypt.hashSync(isCreate.email.toString(), salt);
+  await signInWithPopup(auth, provider)
+    .then((result) => {
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      const user_prof = result.user;
+      addDoc(collection(db, "customers"), {
+            username: user_prof.displayName,
+            email: hashed_pswd,
+            contrycode: '',
+            phonenumber: '',
+            role: 'customer',
+            createdAt : serverTimestamp()
+            })
+            .then((res) => {
+              toast.success('You have successfully signed up')
+            })
+            .catch((errs) => {
+              toast.error('Internal Server!')
+            })
+
+      console.log('Your token is : ' + token);
+      console.log(user_prof);
+     })
+    .catch((error) => {
+      // Handle Errors here.
+      toast.error(error.message)
+      // The email of the user's account used.
+      const emails = error.customData.email;
+      console.log('Email error :' + emails)
+      // The AuthCredential type that was used.
+      const credentialss = GoogleAuthProvider.credentialFromError(error);
+      console.log(credentialss)
+      // ...
+     });
+  }
 
     const handleChange = (e) => {
         setIsCreate({...isCreate , [e.target.name] : [e.target.value]})
@@ -28,7 +70,7 @@ const Signup = () => {
   
     const handleSubmit = async (e) => {
     e.preventDefault();
-    const hashed_pswd = bcrypt.hashSync(isCreate.password.toString(), salt);
+    const hashed_pswd = bcrypt.hashSync(isCreate.email.toString(), salt);
     if(isCreate.password.toString() === isCreate.confirmpswd.toString()){
         if(isCreate.password.toString().length >= 6 ){
         if(isCreate.username.toString() !== ''){
@@ -37,10 +79,10 @@ const Signup = () => {
                     if(isCreate.phone.toString() !== ''){         
        await addDoc(collection(db, "customers"), {
             username: isCreate.username.toString(),
-            email: isCreate.email.toString(),
+            email: hashed_pswd,
             contrycode: isCreate.ccode.toString(),
             phonenumber: isCreate.phone.toString(),
-            password: hashed_pswd,
+            role: 'admin',
             createdAt : serverTimestamp()
               })
              .then((docRef) => {
@@ -99,6 +141,7 @@ const Signup = () => {
      <div className='log-in'>
          <icon.Cart3 className='login-icn'/>
          <h1>NEW ACCOUNT!</h1>
+         <button type='button' className='sigb-btn' id='sgn-google' onClick={handleGoogleSignIn}>Sign up with Google</button>
          <div className='log-div'>
          <input type='text' className='username' placeholder='create a username' name='username' required  onChange={handleChange} />
            <input type='email' className='email' placeholder='enter your email address' name='email' required  onChange={handleChange} />

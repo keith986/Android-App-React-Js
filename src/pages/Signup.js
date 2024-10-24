@@ -10,7 +10,7 @@ import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleA
 const Signup = () => {
   
   const navigate = useNavigate();
-
+  
   const salt = bcrypt.genSaltSync(10)
 
   const [isCreate, setIsCreate] = useState({
@@ -22,16 +22,16 @@ const Signup = () => {
         confirmpswd : ''
   })
 
+  //Google Sign Up
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({   
     prompt : "select_account"
   }); 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignUp = async () => {
   const hashed_pswd = bcrypt.hashSync(isCreate.email.toString(), salt);
   await signInWithPopup(auth, provider)
     .then((result) => {
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential.accessToken;
+
       const user_prof = result.user;
       addDoc(collection(db, "customers"), {
             username: user_prof.displayName,
@@ -42,14 +42,23 @@ const Signup = () => {
             createdAt : serverTimestamp()
             })
             .then((res) => {
-              toast.success('You have successfully signed up')
+              updateProfile(user_prof, {
+                displayName: 'customer'
+                       }) 
+                       .then(() => {
+                           toast.success('Successfully signed up.');
+                           setTimeout(() => {
+                               navigate('/login')
+                           }, 5000)
+                        })
+                       .catch((errs) => {
+                           toast.error('Server response error!')
+                       })   
             })
             .catch((errs) => {
               toast.error('Internal Server!')
             })
-
-      console.log('Your token is : ' + token);
-      console.log(user_prof);
+     
      })
     .catch((error) => {
       // Handle Errors here.
@@ -64,10 +73,11 @@ const Signup = () => {
      });
   }
 
-    const handleChange = (e) => {
+  const handleChange = (e) => {
         setIsCreate({...isCreate , [e.target.name] : [e.target.value]})
-    }
+  }
   
+  //Other Sign Up
     const handleSubmit = async (e) => {
     e.preventDefault();
     const hashed_pswd = bcrypt.hashSync(isCreate.email.toString(), salt);
@@ -141,7 +151,7 @@ const Signup = () => {
      <div className='log-in'>
          <icon.Cart3 className='login-icn'/>
          <h1>NEW ACCOUNT!</h1>
-         <button type='button' className='sigb-btn' id='sgn-google' onClick={handleGoogleSignIn}>Sign up with Google</button>
+         <button type='button' className='sigb-btn' id='sgn-google' onClick={handleGoogleSignUp}>Sign up with Google</button>
          <div className='log-div'>
          <input type='text' className='username' placeholder='create a username' name='username' required  onChange={handleChange} />
            <input type='email' className='email' placeholder='enter your email address' name='email' required  onChange={handleChange} />

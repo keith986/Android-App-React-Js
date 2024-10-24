@@ -7,7 +7,7 @@ const Footer = () => {
     <div className='container' id='footer'>
       <div className='row' id='row-footer'>
         
-        <Link className='div' to={'/'}>
+        <Link className='div' to={'/dashboard'}>
         <icons.HouseFill className='fot' /> 
         <code>Home</code>
         </Link> 

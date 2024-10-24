@@ -18,7 +18,7 @@ const Offers = () => {
         }, 100);
 
         setTimeout(() => {
-         navigate('/');
+         navigate('/dashboard');
         }, 500)
     } 
 

@@ -1,16 +1,27 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import * as icon from 'react-bootstrap-icons'
 import { db, auth } from '../firebase'
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {serverTimestamp, setDoc, doc } from "firebase/firestore";
 import { toast } from 'react-toastify'
 import bcrypt from 'bcryptjs';
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { UserContext } from '../context/UserContext';
 
 const Signup = () => {
   
-  const navigate = useNavigate();
-  
+  const {user} = useContext(UserContext)
+
+  const navigate = useNavigate()
+
+  if(user){
+  if(user.role === 'customer'){
+    navigate('/dashboard')
+  }else if(user.role === 'admin'){
+    navigate('/admin')
+  }
+  }
+
   const salt = bcrypt.genSaltSync(10)
 
   const [isCreate, setIsCreate] = useState({
@@ -33,7 +44,7 @@ const Signup = () => {
     .then((result) => {
 
       const user_prof = result.user;
-      addDoc(collection(db, "customers"), {
+      setDoc(doc(db, "customers", user_prof.uid), {
             username: user_prof.displayName,
             email: hashed_pswd,
             contrycode: '',
@@ -87,39 +98,41 @@ const Signup = () => {
             if(isCreate.email.toString() !== ''){
                 if(isCreate.ccode.toString() !== ''){
                     if(isCreate.phone.toString() !== ''){         
-       await addDoc(collection(db, "customers"), {
-            username: isCreate.username.toString(),
-            email: hashed_pswd,
-            contrycode: isCreate.ccode.toString(),
-            phonenumber: isCreate.phone.toString(),
-            role: 'admin',
-            createdAt : serverTimestamp()
-              })
-             .then((docRef) => {
+    
                 createUserWithEmailAndPassword(auth, isCreate.email.toString(), isCreate.password.toString())
                           .then((userCredential) => {
-                            const user = userCredential.user;
-                            updateProfile(user, {
-                                 displayName: 'customer'
-                                        }) 
-                                        .then(() => {
-                                            toast.success('Successfully signed up.');
-                                            setTimeout(() => {
-                                                navigate('/login')
-                                            }, 5000)
-                                         })
-                                        .catch((errs) => {
-                                            toast.error('Server response error!')
-                                        })   
+                          const user = userCredential.user;
+                          setDoc(doc(db, "customers", user.uid), {
+                              username: isCreate.username.toString(),
+                              email: hashed_pswd,
+                              contrycode: isCreate.ccode.toString(),
+                              phonenumber: isCreate.phone.toString(),
+                              role: 'customer',
+                              createdAt : serverTimestamp()
+                                })
+                               .then((docRef) => {
+                                updateProfile(user, {
+                                  displayName: 'customer'
+                                          }) 
+                                         .then(() => {
+                                           toast.success('Successfully signed up.');
+                                           setTimeout(() => {
+                                            navigate('/login')
+                                           }, 5000)
+                                          })
+                                         .catch((errs) => {
+                                             toast.error('Server response error!')
+                                          }) 
+                                })
+                               .catch((ers) => {
+                                toast.error('Internal server error!')
+                                })
+                             
                            })
                           .catch((error) => {
                             toast.error('Internal server error!')
                            });
-              })
-             .catch((err) => {
-                toast.error('An error occured!')
-                console.log(err.message)
-              })
+             
                     }else{
                         toast.info('Phone number is required!')
                     }

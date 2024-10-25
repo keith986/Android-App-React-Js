@@ -1,8 +1,18 @@
-import React from 'react'
+import React, { useContext, useEffect} from 'react'
 import * as icons from 'react-bootstrap-icons'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { UserContext } from '../context/UserContext'
 
 const Footer = () => {
+  const {user} = useContext(UserContext);
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(!user){
+      navigate('/')
+    }
+  }, [user, navigate])
+
   return (
     <div className='container' id='footer'>
       <div className='row' id='row-footer'>

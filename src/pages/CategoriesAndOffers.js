@@ -10,7 +10,7 @@ const CategoriesAndOffers = () => {
           <h5>Categories</h5>
           <icons.Grid className='rw-icon'/>
         </Link>
-        <Link to='offers' className='row' id='rw'>
+        <Link to='/offers' className='row' id='rw'>
           <h5>Offers</h5>
           <icons.GiftFill className='rw-icon' id='gift-cl'/>
         </Link>

@@ -1,13 +1,33 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import * as icons from 'react-bootstrap-icons'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { UserContext } from '../context/UserContext'
+import { auth } from '../firebase'
+import { toast } from 'react-toastify'
+
 
 const User = () => {
+    const {user} = useContext(UserContext);
+    const navigate = useNavigate();
+
+    const handleSignOut = async () => {
+        await auth.signOut()
+                  .then((resp) => {
+                    toast.success('Successfully logged out')
+                    setTimeout(() => {
+                        navigate('/login')
+                    }, 5000)
+                  })
+                  .catch((errs) => {
+                    toast.error('Could not log out!')
+                  })
+    }
+
   return (
     <div id='user'>
     <div className='user-col'> 
      <div> 
-        <h3>HELLO STEVE</h3>
+        <h3>{!!user && user.username}</h3>
      </div>
      <Link to='/notifications'>
      <icons.BellFill className='cart-icon'/>
@@ -36,7 +56,7 @@ const User = () => {
         </Link>
     </div>
     <div className='user-cols' id='logout'>
-        <Link className='div'> 
+        <Link className='div' onClick={handleSignOut}> 
             <icons.BoxArrowRight className='cart-icon'/>
             <h3 className='logout'>Logout</h3>
         </Link>

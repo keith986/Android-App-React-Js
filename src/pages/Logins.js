@@ -1,13 +1,26 @@
-import React, { useState } from 'react'
-import { auth } from '../firebase'
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import React, { useContext, useState } from 'react'
+import { auth, db } from '../firebase'
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "firebase/auth";
 import { toast } from 'react-toastify'
 import { Link, useNavigate } from 'react-router-dom';
 import * as icon from 'react-bootstrap-icons'
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { bcrypt } from 'bcryptjs';
+import { UserContext } from '../context/UserContext';
 
 const Logins = () => {
 
+const {user} = useContext(UserContext)
+
 const navigate = useNavigate()
+
+if(user){
+  if(user.role === 'customer'){
+    navigate('/dashboard')
+  }else if(user.role === 'admin'){
+    navigate('/admin')
+  }
+}
 
 const [isCredentials, setIsCredientials] = useState({
   email : '',
@@ -29,10 +42,12 @@ signInWithEmailAndPassword(auth, isCredentials.email.toString(), isCredentials.p
                                setTimeout(() => {
                                  navigate('/dashboard')
                                }, 5000)
-                           }else{
+                           }else if(user.displayName === 'admin'){
                               setTimeout(() => {
                                 navigate('/admin')
                               }, 5000)
+                           }else{
+                            toast.error('Account not verified! Kindly reach out to the admin.')
                            }
                            })
                           .catch((error) => {
@@ -46,6 +61,7 @@ provider.setCustomParameters({
   prompt : "select_account"
 }); 
 const handleGoogleSignIn = async () => {
+
   await signInWithPopup(auth, provider)
         .then((result) => {
           const user_p = result.user;
@@ -54,15 +70,42 @@ const handleGoogleSignIn = async () => {
                                setTimeout(() => {
                                  navigate('/dashboard')
                                }, 5000)
-                           }else{
+                           }else if(user_p.displayName === 'admin'){
                               setTimeout(() => {
                                 navigate('/admin')
                               }, 5000)
+                           }else{
+                            const hashed_pswd = bcrypt.hashSync(user_p.email.toString(), 10);
+                            setDoc(doc(db, "customers", user_p.uid), {
+                              username: user_p.displayName,
+                              email: hashed_pswd,
+                              contrycode: '',
+                              phonenumber: '',
+                              role: 'customer',
+                              createdAt : serverTimestamp()
+                              })
+                              .then((res) => {
+                                updateProfile(user_p, {
+                                  displayName: 'customer'
+                                         }) 
+                                         .then(() => {
+                                             setTimeout(() => {
+                                                 navigate('/dashboard')
+                                             }, 5000)
+                                          })
+                                         .catch((errs) => {
+                                             toast.error('Server response error!')
+                                         })   
+                              })
+                              .catch((errs) => {
+                                toast.error('Internal Server!')
+                              })
                            }
          })
         .catch((error) => {
     toast.error(error.message)
          });
+
 }
 
   return (

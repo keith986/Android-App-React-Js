@@ -5,7 +5,6 @@ import { toast } from 'react-toastify'
 import { Link, useNavigate } from 'react-router-dom';
 import * as icon from 'react-bootstrap-icons'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
-import { bcrypt } from 'bcryptjs';
 import { UserContext } from '../context/UserContext';
 
 const Logins = () => {
@@ -75,10 +74,11 @@ const handleGoogleSignIn = async () => {
                                 navigate('/admin')
                               }, 5000)
                            }else{
-                            const hashed_pswd = bcrypt.hashSync(user_p.email.toString(), 10);
+                            
                             setDoc(doc(db, "customers", user_p.uid), {
+                              userid: user_p.uid,
                               username: user_p.displayName,
-                              email: hashed_pswd,
+                              email: user_p.email,
                               contrycode: '',
                               phonenumber: '',
                               role: 'customer',

@@ -18,7 +18,7 @@ const Coupons = () => {
 
   return (
     <div id='coupons'>
-    <div className='open-modal' id='myModal'>
+    <div className='open-modal' id='myModals'>
     <div className='back-bg'>
       <Link  onClick={closeModal}>
        <icons.ChevronRight className='back'/>

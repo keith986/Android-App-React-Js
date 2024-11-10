@@ -1,10 +1,29 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import $ from 'jquery'
 import * as icons from 'react-bootstrap-icons'
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { db } from '../firebase'
+import { UserContext } from '../context/UserContext'
+import { toast } from 'react-toastify'
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 const Settings = () => {
+    const {user} = useContext(UserContext)
+    const [userAddress, setUserAddress] = useState([])
+    
     const navigate = useNavigate()
+    
+    const [isAddress, setIsAddress] = useState({
+      city: '',
+      location: ''
+    })
+    const [isPhoneNumber, setIsPhoneNumber] = useState([])
+
+    const handleAddress = (ev) => {
+      setIsAddress({...isAddress, [ev.target.name]: [ev.target.value]})
+    }
 
     const closeModal =  async() => {
       $('#myModal').animate({
@@ -14,13 +33,6 @@ const Settings = () => {
       setTimeout(() => {
         navigate('/user')
       }, 100)
-    }
-
-    const handlePass = async () => {
-        $('#pswd').animate({
-            height: 'toggle',
-            show : 'toggle'
-        })
     }
 
     const handlePhone = async () => {
@@ -37,9 +49,70 @@ const Settings = () => {
         })
     }
 
+    const handleAddressSubmit = async (e) => {
+        e.preventDefault();
+        if(isAddress.city.toString().length > 0){
+          if(isAddress.location.toString().length > 0){
+            await setDoc(doc(db, "address", user.userid),{
+                         city: isAddress.city.toString(),
+                         location: isAddress.location.toString()
+                         })
+                        .then((resp) => {
+                         toast.success('Address updated successfully')
+                         })
+                        .catch((errors) => {
+                         toast.error('Could not update Address!')
+                         })
+          }else{
+            toast.info('Specify your location')
+          }
+        }else{
+          toast.info('Select your city')
+        }
+    }
+
+    const addressDetail = async () => {
+      const colRef = doc(db, "address", user.userid);
+      const docRef = await getDoc(colRef)
+      
+      if(docRef.exists()){
+        setUserAddress(docRef.data())
+      }else{
+        setUserAddress([])
+      }
+
+    }
+
+    useEffect(() => {
+      addressDetail()
+    })
+
+    const handlePhoneNumber = (eve) => {
+      setIsPhoneNumber('+' + eve)
+    }
+
+    const submitPhoneNumber = async (event) => {
+      event.preventDefault();
+      
+          if(isPhoneNumber.toString() !== ''){
+            await updateDoc(doc(db ,"customers", user.userid), {
+                             phonenumber: isPhoneNumber.toString()
+                            })
+                           .then(() => {
+                             toast.success('Phone number updated successfully')
+                            })
+                           .catch((error) => {
+                             toast.error('Could not update phone number!')
+                            })
+          }else{
+            toast.info('Invalid phone number')
+          }
+
+    }
+
   return (
     <div id='settings'>
-       <div className='open-modal' id='myModal'>
+       <div className='open-modal' id='myModals'>
     <div className='back-bg'>
       <Link  onClick={closeModal}>
         <icons.ChevronRight className='back'/>
@@ -56,34 +129,20 @@ const Settings = () => {
     <div className='modal-pay'>
        <button className='lipa'>
        <div>
-         Password
-       </div> 
-       <icons.ChevronDown style={{fontSize: '20px'}} onClick={handlePass}/>
-       </button>
-       <div id='pswd'>
-       <div className='mpesa'>
-        <p>Current password</p>
-        <input type='number' className='tcode' placeholder='Current Password'/>
-        <p>New password</p>
-        <input type='text' className='tcode' placeholder='New Password'/>
-       </div>
-
-       </div>
-    </div>
-
-    <div className='mod'></div>
-    <div className='modal-pay'>
-       <button className='lipa'>
-       <div>
          Phone number
        </div> 
        <icons.ChevronDown style={{fontSize: '20px'}} onClick={handlePhone}/>
        </button>
        <div id='fon'>
-       <div className='mpesa'>
+       <form onSubmit={submitPhoneNumber}>
+       <div className='mpesa' style={{padding: '10px'}}>
         <p>New phone number</p>
-        <input type='text' className='tcode' placeholder='New Phone number'/>
+        <div id='phone_code'>   
+        <PhoneInput country={'ke'} name='phone' onChange={handlePhoneNumber} />
+        </div>
+        <button type='submit' className='tcode' id='address-btn'>Set</button>
        </div>
+       </form>
        </div>
     </div>
 
@@ -96,9 +155,11 @@ const Settings = () => {
        <icons.ChevronDown style={{fontSize: '20px'}} onClick={handleLoc}/>
        </button> 
        <div id='loc'>
+       <form onSubmit={handleAddressSubmit}>
        <div className='mpesa'>
         <p>Current City</p>
-        <select className='tcode'>
+        <select className='tcode' name='city' onChange={handleAddress}>
+    <option>Select</option>
     <option value="baringo">Baringo</option>
     <option value="bomet">Bomet</option>
     <option value="bungoma">Bungoma</option>
@@ -147,12 +208,29 @@ const Settings = () => {
     <option value="wajir">Wajir</option>
     <option value="pokot">West Pokot</option>
         </select>
-
         <p>Location</p>
-        <input type='text' className='tcode' placeholder='Specify your current location'/>
+        <input type='text' className='tcode' name='location' placeholder={!!userAddress ? userAddress.location : 'Specify your current location'} onChange={handleAddress}/>
+        <button type='submit' className='tcode' id='address-btn'>Set</button>
+       </div>
+       </form>
+       </div>
+    </div> 
 
-       </div>
-       </div>
+    <br/>
+
+    <div className='mod' style={{textAlign: 'center'}}>User information</div>
+    <div className='modal-pay'>
+     <div id='locs'>
+      <span>{!!user ? user.username : ''}</span>
+      <br/>
+      <span>{!!user ? user.email : ''}</span>
+      <br/>
+      <span>{!!user ? user.phonenumber : ''}</span>
+      <br/>
+      <i>{!!userAddress ? userAddress.city : ''}</i>
+      <br/>
+      <i>{!!userAddress ? userAddress.location : ''}</i>
+     </div>
     </div>
 
        </div> 

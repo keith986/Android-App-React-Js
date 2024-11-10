@@ -20,17 +20,22 @@ import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SignupDirectory from './components/SignupDirectory/SignupDirectory.js';
 import Signup from './pages/Signup.js';
-import AdminDashboard from './pages/AdminDashboard.js';
-import axios from 'axios'
+import Axios from 'axios'
 import { UserContextProvider } from './context/UserContext.js';
+import AdminBar from './pages/AdminBar.js';
+import AdminBarDirectory from './components/AdminBarDirectory/AdminBarDirectory.js';
+import AdminDashboard from './pages/AdminDashboard.js';
+import AllUsers from './pages/AllUsers.js';
+import AllProducts from './pages/AllProducts.js';
+import AllCategories from './pages/AllCategories.js';
 
-axios.defaults.baseURL = 'http://localhost:7000';
-axios.defaults.withCredentials = true;
+//connect to backend
+Axios.defaults.baseURL = 'http://localhost:5000/';
+Axios.defaults.withCredentials = true;
 
 function App() {
   return (
-    <UserContextProvider>
-      
+    <UserContextProvider> 
       <div className='screen'>
       <ToastContainer
         position="top-right"
@@ -54,10 +59,17 @@ function App() {
         <Signup path='/signup'/>
       </SignupDirectory>
 
+      <AdminBarDirectory>
+        <AdminBar/>
+      </AdminBarDirectory>
+
       <Routes>
         <Route element={<Home/>} path='/dashboard'/>
-        <Route element={<AdminDashboard/>} path='/admin' />
+        <Route element={<AdminDashboard/>} path='/admin'/>
+        <Route element={<AllUsers/>} path='/allusers'/>
+        <Route element={<AllProducts/>} path='/allproducts'/>
         <Route element={<Categories/>} path='/categories'/>
+        <Route element={<AllCategories/>} path='/allcategories'/>
         <Route element={<Offers/>} path='/offers'/>
         <Route element={<Cart/>} path='/cart'/>
         <Route element={<User/>} path='/user'/>

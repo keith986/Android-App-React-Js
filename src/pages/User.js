@@ -14,9 +14,8 @@ const User = () => {
         await auth.signOut()
                   .then((resp) => {
                     toast.success('Successfully logged out')
-                    setTimeout(() => {
-                        navigate('/login')
-                    }, 5000)
+                    navigate('/login')
+                    window.location.reload();
                   })
                   .catch((errs) => {
                     toast.error('Could not log out!')

@@ -1,16 +1,33 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as icons from 'react-bootstrap-icons'
 import { Link, useNavigate } from 'react-router-dom'
 import $ from 'jquery'
-import sample from '../images/sample.jpeg'
-import another from '../images/another.jpeg'
-import yeet from '../images/yeet.jpeg'
+import Loading_icon from '../images/Loading_icon.gif'
+import { collection, doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore'
+import { db } from '../firebase'
+import { toast } from 'react-toastify'
 
 const Categories = () => {
 
     const navigate = useNavigate()
     const [isModal, setIsModal] = useState(false)
- 
+    const [isCat, setIsCat] = useState([])
+    const [Prdt, setPrdt] = useState([])
+    const [catId, setCatId] = useState('') 
+    const [isModals, setIsModals] = useState(false)
+    const [viewPrdt, setViewPrdt] = useState([])
+
+    async function fetchProducts () {
+      const colRef = collection(db, "products")
+      onSnapshot(colRef, (snapShot) => {
+              let pro_ducts = [];
+              snapShot.docs.forEach((snaps) => {
+                 pro_ducts.push({...snaps.data(), id: snaps.id})
+              })
+          setPrdt(pro_ducts);
+      })
+    }
+
     const handleClick = async () => {
         $('.container-row').animate({
             width: 'toggle'
@@ -20,11 +37,14 @@ const Categories = () => {
         }, 500)
     } 
 
-    const handleModal =  async() => {
-      setIsModal(true)
+    const handleModal =  async(e) => {
+      if(e.target.id !== ''){
+      setCatId(e.target.id)
+      setIsModal(true);
       $('#myModal').animate({
         width: 'toggle'
       }, 100);
+      }
     }
 
     const closeModal =  async() => {
@@ -34,6 +54,50 @@ const Categories = () => {
       }, 100);
     }
 
+    const fetchCategories = async () => {
+      const colRef = collection(db, "categories")
+      await onSnapshot(colRef, (snapShot) => {
+              let products_cat = [];
+              snapShot.docs.forEach((snaps) => {
+                 products_cat.push({...snaps.data(), id: snaps.id})
+              })
+          setIsCat(products_cat);
+      })
+    }
+
+    useEffect( () => {
+      fetchCategories();
+      fetchProducts();
+    }, []);
+
+  const addToCart = async (e) => {
+    const colRef = doc(db, "products", e.target.id);
+    const docSnap = await getDoc(colRef);
+
+      await setDoc(doc(db, 'cart', e.target.id), {
+                    cartdata : docSnap.data()
+                  })
+                  .then((res) => {
+                    toast.success('added to cart')
+                  })
+                  .catch((err) => {
+                    toast.error('Could not add to cart')
+                  })
+  }
+  
+  async function handleViewProduct(ev) {
+    const colRef = doc(db, "products", ev.target.id);
+    const docSnap = await getDoc(colRef);
+    if(docSnap.exists()){
+      setViewPrdt({...docSnap.data(), id : ev.target.id});
+      setIsModals(true)
+    }
+  }
+  
+  const handleCloseModal = () => {
+    setIsModals(false)
+  }
+
   return (
     <div id='categories'>
      <div className='back-bg'>
@@ -42,89 +106,70 @@ const Categories = () => {
     </Link>
      </div>
  
+    <div className={isModals ? 'open-modal' : 'close-modal'} style={{zIndex: '10000'}}>
+    <div className='modal-content'>
+          <div className='back-bg'>
+            <Link onClick={handleCloseModal}>
+             <icons.ChevronRight className='back'/>
+            </Link> 
+          </div>
+          <div className='modal-body'>
+          <div className='modal-header'>
+          <h1>{viewPrdt.name}</h1>
+            <img src={!!viewPrdt ? viewPrdt.imeg : Loading_icon} alt='alt_product' id='alimgs'/>
+            </div>  
+            <p>{viewPrdt.description}</p>
+            <span style={{margin: '20px'}}></span> 
+          </div>
+          <div className='modal-footer'>
+          <button type='submit'  className='mod-btn' id={viewPrdt.id} onClick={addToCart}>Add to cart</button>
+          </div>
+    </div>
+    </div>
+
     <div className={isModal ? 'open-modal' : 'close-modal'} id='myModal'>
-    <div className='back-bg'>
+      <div className='back-bg'>
       <Link  onClick={closeModal}>
       <icons.ChevronRight className='back'/>
       </Link> 
-    </div>
+      </div>
       <div className='modal-body'>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={sample} className='img' alt='img_src'/>
-            <h3>Cylinder</h3>
-            <p>250.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={sample} className='img' alt='img_src'/>
-            <h3>Cylinder</h3>
-            <p>250.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={yeet} className='img' alt='img_src'/>
-            <p>210.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={yeet} className='img' alt='img_src'/>
-            <p>210.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={sample} className='img' alt='img_src'/>
-            <p>250.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={another} className='img' alt='img_src'/>
-            <p>200.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={yeet} className='img' alt='img_src'/>
-            <p>210.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={yeet} className='img' alt='img_src'/>
-            <p>210.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-
+      {!!Prdt 
+      ?
+       Prdt.map((dt) => {
+        if(dt.cat !== catId){
+          return !dt;
+        }
+          return (
+            <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
+            <img src={!!dt.imeg ? dt.imeg : Loading_icon} className='img' alt='img_src' id={dt.id} onClick={handleViewProduct}/>
+            <h4>{dt.name}</h4>
+            <p>{dt.sprice} KES</p>
+            <button className='add-to-cart' id={dt.id} onClick={addToCart}>Add to Cart</button>
+            </div>
+          );
+      })
+      :
+      <img src={Loading_icon} className='img' alt='Loading_icon'/>
+      }
       </div>
     </div>
 
      <div className='container-row' style={{marginTop: '10%'}}> 
-        <Link className='row-colss' onClick={handleModal}>
-            <h3>Cups</h3>
-            <icons.ColumnsGap className='rw-icon'/>
-        </Link>
-        <Link className='row-colss' onClick={handleModal}>
-        <h3>Jugs</h3>
-        <icons.ColumnsGap className='rw-icon'/>
-        </Link>
-        <Link className='row-colss' onClick={handleModal}>
-        <h3>Heaters</h3>
-        <icons.ColumnsGap className='rw-icon'/>
-        </Link>
-        <Link className='row-colss' onClick={handleModal}>
-        <h3>Cookers</h3>
-        <icons.ColumnsGap className='rw-icon'/>
-        </Link>
-        <Link className='row-colss' onClick={handleModal}>
-        <h3>Spoons</h3>
-        <icons.ColumnsGap className='rw-icon'/>
-        </Link>
-        <Link className='row-colss' onClick={handleModal}>
-        <h3>Knifes</h3>
-        <icons.ColumnsGap className='rw-icon'/>
-        </Link>
-        <Link className='row-colss' onClick={handleModal}>
-        <h3>Plates</h3>
-        <icons.ColumnsGap className='rw-icon'/>
-        </Link>
+     {
+      !!isCat
+       ? 
+      isCat.map((cat) => {
+          return (
+            <Link className='row-colss' onClick={handleModal} id={cat.name}>
+                <h3 id={cat.name}>{cat.name}</h3>
+                <icons.ColumnsGap className='rw-icon' id={cat.name}/>
+            </Link>
+          );
+      })
+       :
+      <img src={Loading_icon} className='img' alt='Loading_icon'/>
+      }
      </div>
 
     </div>

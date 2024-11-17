@@ -1,13 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import $ from 'jquery'
 import * as icons from 'react-bootstrap-icons'
-import sample from '../images/sample.jpeg'
+import { db } from '../firebase'
+import Loading_icon from '../images/Loading_icon.gif'
+import { collection, deleteDoc, doc, onSnapshot } from 'firebase/firestore'
+import { toast } from 'react-toastify'
 
 const Cart = () => {
     const navigate = useNavigate()
     const [isModal, setIsModal] = useState(false)
- 
+    const [isCartID, setIsCartID] = useState([])
+
     const handleClick = async () => {
         $('.container-row').animate({
             width: 'toggle'
@@ -39,8 +43,48 @@ const Cart = () => {
         })
     }
 
+    async function fetchCartId(){
+      const colRef = collection(db, 'cart')
+      await onSnapshot(colRef, (snapshot) => {
+        let cartID = [];
+    
+        snapshot.docs.forEach((doces) => {
+          cartID.push({...doces.data(), id: doces.id}); 
+        })
+       
+        setIsCartID(cartID)
+      })
+    }
+
+    useEffect(() => {
+      fetchCartId()
+    }, [])
+
+  const handleDelete = async (ev) => {
+      await deleteDoc(doc(db, 'cart', ev.target.id))
+                     .then((res) => {
+                       toast.success('Successfully deleted')
+                     })
+                     .catch((err) => {
+                      toast.error(err.message)
+                     })
+  }
+
+  const totalPrice = () => {
+    var prc = document.getElementsByClassName('price').innerHTML;
+    var ttl = 0;
+    ttl+= parseFloat(parseInt(prc)); 
+    document.getElementById('fnlprc').innerHTML = ttl;
+    console.log(prc) 
+  }
+
+  useEffect(() => {
+    totalPrice();
+  }, [])
+
   return (
     <div id='cart'>
+    
     <div className={isModal ? 'open-modal' : 'close-modal'} id='myModal'>
     <div className='back-bg'>
       <Link  onClick={closeModal}>
@@ -96,10 +140,9 @@ const Cart = () => {
     <Link to='/orders'>
     <button type='button' className='btn_orders' onClick={handleModal}><div><icons.Cart3/> Place Order</div> <span className='finalprc'>2550 KES</span></button>
     </Link>
-     </div>
-
-     <div>
-
+    </div>
+    
+    <div>
      <div className='back-bg'>
         <Link  onClick={handleClick}>
         <icons.ChevronRight className='back'/>
@@ -108,55 +151,36 @@ const Cart = () => {
      <h3 className='header-cart'><icons.Cart3 className='cart-icon'/> Cart</h3>
      <div style={{display: 'flex', justifyContent: 'space-between', paddingRight: '10px', paddingLeft: '10px'}}>
         <h5>Product details</h5>
-        <h5>0 Products</h5>
+        <h5>{!!isCartID && isCartID.length} Products</h5>
      </div>
      <div className='container-row' id='cart-scroll'>
-
-     <div className='cart-col'>
-     <img src={sample} className='cart_img' alt='img_src'/>
-     <div>
-        <h5>Food Flask</h5>
-        <p>250.00</p>
+     {!!isCartID
+     ? 
+     isCartID.map((crt) => {
+      console.log(crt)
+      return (
+        <div className='cart-col'>
+         <img src={!!crt.cartdata.imeg ? crt.cartdata.imeg : Loading_icon} className='cart_img' alt='img_src'/>
         <div>
-        <button className='cart_button_right'><icons.Dash /></button>
-        <input type='number' className='cart_input' placeholder='0'/>
-        <button className='cart_button_left'><icons.Plus /></button>
-        </div>
-     </div>
-     <Link className='xlg-link'><icons.XLg/></Link>
-     </div>
-     <div className='cart-col'>
-     <img src={sample} className='cart_img' alt='img_src'/>
-     <div>
-        <h5>Food Flask</h5>
-        <p>250.00</p>
+        <h5>{crt.cartdata.name}</h5>
+        <p><span className='price'>{crt.cartdata.sprice}</span> KES</p>
         <div>
-        <button className='cart_button_right'><icons.Dash /></button>
-        <input type='number' className='cart_input' placeholder='0'/>
-        <button className='cart_button_left'><icons.Plus /></button>
+         <input type='number' className='cart_input' placeholder='0' id='cart-input'/>
         </div>
-     </div>
-     <Link className='xlg-link'><icons.XLg/></Link>
-     </div>
-     <div className='cart-col'>
-     <img src={sample} className='cart_img' alt='img_src'/>
-     <div>
-        <h5>Food Flask</h5>
-        <p>250.00</p>
-        <div>
-        <button className='cart_button_right'><icons.Dash /></button>
-        <input type='number' className='cart_input' placeholder='0'/>
-        <button className='cart_button_left'><icons.Plus /></button>
         </div>
-     </div>
-    <Link className='xlg-link'><icons.XLg/></Link>
-     </div>
+        <Link className='xlg-link' id={crt.id} onClick={handleDelete}><icons.XLg id={crt.id} onClick={handleDelete}/></Link>
+        </div>    
+      );
+     })
+     :
+     <img src={Loading_icon} className='img' alt='Loading_icon'/>
+     }
 
      </div>
 
     </div>
 
-    <button type='button' className='btn_order' onClick={handleModal}><div><icons.Cart3/> Confirm Order</div> <span className='finalprc'>3000 KES</span></button>
+    <button type='button' className='btn_order' onClick={handleModal}><div><icons.Cart3/> Confirm Order</div> <span className='finalprc' id='fnlprc'>3000 KES</span></button>
     </div>
   )
 }

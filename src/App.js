@@ -72,7 +72,7 @@ function App() {
         <Route element={<AllCategories/>} path='/allcategories'/>
         <Route element={<Offers/>} path='/offers'/>
         <Route element={<Cart/>} path='/cart'/>
-        <Route element={<User/>} path='/user'/>
+        <Route element={<User/>} path='/user'/> 
         <Route element={<Orders/>} path='/orders'/>
         <Route element={<Coupons/>} path='/coupons'/>
         <Route element={<HelpAndSupport/>} path='/help'/>

@@ -1,17 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import * as icons from 'react-bootstrap-icons'
 import $ from 'jquery'
-import sample from '../images/sample.jpeg'
-import another from '../images/another.jpeg'
-import yeet from '../images/yeet.jpeg'
+import Loading_icon from '../images/Loading_icon.gif'
+import { collection, doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore'
+import { db } from '../firebase'
+import { toast } from 'react-toastify'
 
 const Offers = () => {
 
     const navigate = useNavigate();
 
     const [isModal, setIsModal] = useState(false);
- 
+    const [Prdt, setPrdt] = useState([])
+    const [isModals, setIsModals] = useState(false)
+    const [viewPrdt, setViewPrdt] = useState([])
+
     const handleClick = async () => {
         $('.container-row').animate({
             width: 'toggle'
@@ -20,7 +24,7 @@ const Offers = () => {
         setTimeout(() => {
          navigate('/dashboard');
         }, 500)
-    } 
+    }  
 
     const handleModal =  async() => {
       setIsModal(true)
@@ -36,6 +40,49 @@ const Offers = () => {
       }, 100);
     }
 
+    async function fetchProducts () {
+      const colRef = collection(db, "products")
+      await onSnapshot(colRef, (snapShot) => {
+              let pro_ducts = [];
+              snapShot.docs.forEach((snaps) => {
+                 pro_ducts.push({...snaps.data(), id: snaps.id})
+              })
+          setPrdt(pro_ducts);
+      })
+    }
+
+    useEffect(() => {
+      fetchProducts();
+    },[])
+
+  const addToCart = async (e) => {
+    const colRef = doc(db, "products", e.target.id);
+    const docSnap = await getDoc(colRef);
+
+      await setDoc(doc(db, 'cart', e.target.id), {
+                    cartdata : docSnap.data()
+                  })
+                  .then((res) => {
+                    toast.success('added to cart')
+                  })
+                  .catch((err) => {
+                    toast.error('Could not add to cart')
+                  })
+  }
+  
+  async function handleViewProduct(ev) {
+    const colRef = doc(db, "products", ev.target.id);
+    const docSnap = await getDoc(colRef);
+    if(docSnap.exists()){
+      setViewPrdt({...docSnap.data(), id : ev.target.id});
+      setIsModals(true)
+    }
+  }
+  
+  const handleCloseModal = () => {
+    setIsModals(false)
+  }
+
   return (
     <div id='offers'>
     <div className='back-bg'>
@@ -44,6 +91,27 @@ const Offers = () => {
     </Link>
     </div>
     
+    <div className={isModals ? 'open-modal' : 'close-modal'} style={{zIndex: '10000'}}>
+    <div className='modal-content'>
+          <div className='back-bg'>
+            <Link onClick={handleCloseModal}>
+             <icons.ChevronRight className='back'/>
+            </Link> 
+          </div>
+          <div className='modal-body'>
+          <div className='modal-header'>
+          <h1>{viewPrdt.name}</h1>
+            <img src={!!viewPrdt ? viewPrdt.imeg : Loading_icon} alt='alt_product' id='alimgs'/>
+            </div>  
+            <p>{viewPrdt.description}</p>
+            <span style={{margin: '20px'}}></span> 
+          </div>
+          <div className='modal-footer'>
+          <button type='submit'  className='mod-btn' id={viewPrdt.id} onClick={addToCart}>Add to cart</button>
+          </div>
+    </div>
+    </div>
+
     <h3 className='header-offers'><icons.LightningChargeFill className='offer-icon'/> Flash Sales and Offers</h3>
 
     <div className={isModal ? 'open-modal' : 'close-modal'} id='myModal'>
@@ -53,46 +121,28 @@ const Offers = () => {
       </Link> 
     </div>
       <div className='modal-body'>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={sample} className='img' alt='img_src'/>
-            <p>250.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={another} className='img' alt='img_src'/>
-            <p>200.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={yeet} className='img' alt='img_src'/>
-            <p>210.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={yeet} className='img' alt='img_src'/>
-            <p>210.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={sample} className='img' alt='img_src'/>
-            <p>250.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={another} className='img' alt='img_src'/>
-            <p>200.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={yeet} className='img' alt='img_src'/>
-            <p>210.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
-        <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
-            <img src={yeet} className='img' alt='img_src'/>
-            <p>210.00 KES</p>
-            <button className='add-to-cart'>Add to Cart</button>
-        </div>
+      {!!Prdt 
+      ?
+       Prdt.map((dt) => {
+        if(dt.offer !== 'Yes'){
+          return !dt;
+        }
+
+        var disc = Math.floor(dt.discount * dt.sprice / 100);
+        var sum = parseFloat(disc + parseInt(dt.sprice))
+ 
+          return (
+            <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
+            <img src={!!dt.imeg ? dt.imeg : Loading_icon} className='img' alt='img_src' id={dt.id} onClick={handleViewProduct}/>
+            <h4>{dt.name}</h4>
+            <p>{dt.sprice} KES <sup style={{color: 'red'}}><del>{sum}</del></sup></p>
+            <button className='add-to-cart' id={dt.id} onClick={addToCart}>Add to Cart</button>
+            </div>
+          );
+      })
+      :
+      <img src={Loading_icon} className='img' alt='Loading_icon'/>
+      }
       </div>
     </div>
 

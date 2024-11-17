@@ -46,7 +46,6 @@ const AllProducts = () => {
                    pro_ducts.push({...snaps.data(), id: snaps.id})
                 })
             setAllProducts(pro_ducts);
-            console.log(pro_ducts)
         })
     }
 
@@ -113,7 +112,8 @@ const AllProducts = () => {
                                                             cat : isAdd.cat.toString(),
                                                             offer : isAdd.offer.toString(),
                                                             discount : isAdd.discount.toString(),
-                                                            adminId: user.userid
+                                                            adminId: user.userid,
+                                                            views: '0'
                                                            })
                                                            .then((res) =>{
                                                                $('#myModales').animate({

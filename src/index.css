@@ -1139,6 +1139,12 @@ width: 100vw;
   z-index: 6000;
 }
 
+#alimgs{
+  max-width: 300px;
+  max-height: 400px;
+  border-radius: 5px;
+}
+
 @media  screen and (min-width : 769px) {
   .log-in > .login-icn {
     display: none;
@@ -1212,6 +1218,13 @@ width: 100vw;
   }
   .log-frst{
     display: none;
+  }
+  #myModal{
+    width: 100vw;
+    box-shadow: none;
+  }
+  .open-modal{
+    bottom: 0;
   }
 }
 

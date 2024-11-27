@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import { collection, doc, getDoc, limit, onSnapshot, orderBy, query, setDoc } from 'firebase/firestore'
+import React, { useContext, useEffect, useState } from 'react'
+import { addDoc, collection, doc, getDoc, limit, onSnapshot, orderBy, query} from 'firebase/firestore'
 import { db } from '../firebase'
 import Loading_icon from '../images/Loading_icon.gif'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import * as icons from 'react-bootstrap-icons'
+import {UserContext} from '../context/UserContext'
 
 const PopularProducts = () => {
+  const {user} = useContext(UserContext)
   const [popularPrdt, setPopularPrdt] = useState([])
   const [isModal, setIsModal] = useState(false)
   const [viewPrdt, setViewPrdt] = useState([])
@@ -27,12 +29,13 @@ const PopularProducts = () => {
       fetchPopularProducts()  
   }, [])
 
-  const addToCart = async (e) => {
+const addToCart = async (e) => {
     const colRef = doc(db, "products", e.target.id);
     const docSnap = await getDoc(colRef);
 
-    await setDoc(doc(db, 'cart', e.target.id), {
-                  cartdata : docSnap.data()
+    await addDoc(collection(db, 'cart'), {
+                  cartdata : docSnap.data(),
+                  userid: !!user && user.userid
                 })
                 .then((res) => {
                   toast.success('added to cart')
@@ -80,7 +83,7 @@ const handleCloseModal = () => {
     </div>
 
         <div className='row' id='rw-top'>     
-        {!!popularPrdt 
+        {!!popularPrdt && popularPrdt.length > 0
         ?
          popularPrdt.map((dt) => {
           return (

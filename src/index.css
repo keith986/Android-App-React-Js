@@ -409,8 +409,9 @@ font-size: 16px;
   color: #000;
 }
 
-.cart_input{
-  width: 40px;
+.cart-input{
+  padding: 5px;
+  width: 50px;
   text-align: center;
 }
 
@@ -1143,6 +1144,11 @@ width: 100vw;
   max-width: 300px;
   max-height: 400px;
   border-radius: 5px;
+}
+
+.imgss{
+  width: 100%;
+  max-height: 100%;
 }
 
 @media  screen and (min-width : 769px) {

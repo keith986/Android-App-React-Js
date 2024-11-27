@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import $ from 'jquery'
 import * as icons from 'react-bootstrap-icons'
 import { db } from '../firebase'
-import Loading_icon from '../images/Loading_icon.gif'
-import { collection, deleteDoc, doc, onSnapshot } from 'firebase/firestore'
+import Loading_icon from '../images/empty.png'
+import { addDoc, collection, deleteDoc, doc, onSnapshot } from 'firebase/firestore'
 import { toast } from 'react-toastify'
+import {UserContext} from '../context/UserContext'
 
 const Cart = () => {
+    const {user} = useContext(UserContext)
     const navigate = useNavigate()
     const [isModal, setIsModal] = useState(false)
-    const [isCartID, setIsCartID] = useState([])
+    const [isCartID, setIsCartID] = useState([]) 
 
     const handleClick = async () => {
         $('.container-row').animate({
@@ -18,7 +20,7 @@ const Cart = () => {
         });
 
         setTimeout(() => {
-        navigate('/')
+            navigate('/')
         }, 500)
     } 
 
@@ -58,34 +60,119 @@ const Cart = () => {
 
     useEffect(() => {
       fetchCartId()
-    }, [])
+    }, [isCartID])
 
   const handleDelete = async (ev) => {
       await deleteDoc(doc(db, 'cart', ev.target.id))
                      .then((res) => {
-                       toast.success('Successfully deleted')
+                       console.log('done')
                      })
                      .catch((err) => {
                       toast.error(err.message)
                      })
   }
 
-  const totalPrice = () => {
-    var prc = document.getElementsByClassName('price').innerHTML;
-    var ttl = 0;
-    ttl+= parseFloat(parseInt(prc)); 
-    document.getElementById('fnlprc').innerHTML = ttl;
-    console.log(prc) 
-  }
+  const handleAddProductCart = async (evs) => {
+    const crtinput = document.getElementById('crt-'+evs.target.id).value;
+    document.getElementById('crt-' + evs.target.id).value ++; 
 
+    if(crtinput < 0){
+
+     await deleteDoc(doc(db, 'cart', evs.target.id))
+                   .then((res) => {
+                         toast.success('Successfully deleted')
+                    })
+                   .catch((err) => {
+                          toast.error(err.message)
+                    })
+    }else{    
+      if(crtinput === ''){
+        document.getElementById('prce-'+evs.target.id).innerHTML = 1 * evs.target.className;
+        document.getElementById('prc-'+evs.target.id).innerHTML = 1 * evs.target.className;
+      }else{
+      const mutlinterger = parseInt(crtinput) + 1;
+      const multiply = mutlinterger * evs.target.className;
+      document.getElementById('prce-'+evs.target.id).innerHTML = multiply.toLocaleString();
+      document.getElementById('prc-'+evs.target.id).innerHTML = multiply;
+      }
+    }
+
+   }
+ 
+   const handleMinusProductCart = async (evs) => {
+    const crtinput = document.getElementById('crt-'+evs.target.id).value;
+    document.getElementById('crt-' + evs.target.id).value --; 
+ 
+    if(crtinput < 2){
+     await deleteDoc(doc(db, 'cart', evs.target.id))
+                   .then((res) => {
+                         console.log('done')
+                    })
+                   .catch((err) => {
+                          toast.error(err.message)
+                    })
+    }else{
+    const mutlinterger = parseInt(crtinput) - 1;
+    const multiply = mutlinterger * evs.target.className;
+    document.getElementById('prce-'+evs.target.id).innerHTML = multiply.toLocaleString();
+    document.getElementById('prc-'+evs.target.id).innerHTML = multiply;
+    } 
+
+   }
+            
   useEffect(() => {
-    totalPrice();
-  }, [])
+    var ttl = 0.00;
+    var prdt_length = document.getElementsByClassName('cart-col').length;
+    
+    $('.pricee').each(function(){
+      var prc = $(this).text() 
+      ttl += parseInt(prc); 
+    })
 
+    document.getElementById('pdl').innerHTML = prdt_length;
+    var disoff = document.getElementById('disoff').innerHTML;
+    var to_tal = ttl - disoff ;
+    document.getElementById('ttprc').innerHTML = to_tal.toLocaleString();
+    document.getElementById('ttprcs').innerHTML = to_tal.toLocaleString();
+    document.getElementById('fnlprc').innerHTML = ttl.toLocaleString();
+    document.getElementById('fnlprcs').innerHTML = ttl.toLocaleString();
+  
+  }, [isCartID]) 
+  
+  const handleOrder = async() => {
+    const dta = [];
+    var elem = document.getElementsByClassName('crt-name');
+    var disc = document.getElementById('disoff').innerHTML;
+    var ttl = document.getElementById('ttprc').innerHTML;
+    var docID = document.getElementById('doc-id').value;
+
+    for(var i=0; i < elem.length; i++){
+      dta.push({name : elem[i].title, amt : elem[i].innerText}) 
+    }  
+
+    await addDoc(collection(db, 'orders'),{
+                   userid : !!user && user.userid,
+                   order: dta,
+                   discount : disc,
+                   total: ttl
+                 })
+          .then((res) => {
+            deleteDoc(doc(db, 'cart', docID))
+                     .then((res) => { 
+                      toast.success('Ordered successfully')
+                      navigate('/orders')
+                       })
+                     .catch((err) => {toast.error(err.message)})
+          })
+          .catch((err) => toast.error(err.message))
+  }
+ 
+
+  
   return (
     <div id='cart'>
     
-    <div className={isModal ? 'open-modal' : 'close-modal'} id='myModal'>
+    <div className={isModal ? 'open-modal' : 'close-modal'}>
     <div className='back-bg'>
       <Link  onClick={closeModal}>
       <icons.ChevronRight className='back'/>
@@ -96,15 +183,15 @@ const Cart = () => {
 
       <div className='modal-total'>
         <p>Order Value</p>
-        <span>3000 KES</span>
+        <span id='fnlprc'>0.00 KES</span>
       </div>
-      <div className='modal-total'>
+      <div className='modal-total'> 
         <p>Discount (Offer) </p>
-        <span style={{color: 'green'}}>50 KES</span>
+        <span style={{color: 'green'}} id='disoff'>0.00</span>
       </div>
       <div className='modal-total'>
         <h5>Total</h5>
-        <h5>2550 KES</h5>
+        <h5 id='ttprc'>0.00 KES</h5>
       </div>
       <h3 className='header-cart'>Payment Method</h3>
       <div className='modal-pay'>
@@ -137,8 +224,9 @@ const Cart = () => {
       <button className='lipa'><div><input type='checkbox'/> Cash on Delivery</div> <icons.Wallet2 style={{fontSize: '20px'}}/></button>
       </div>
     </div>
-    <Link to='/orders'>
-    <button type='button' className='btn_orders' onClick={handleModal}><div><icons.Cart3/> Place Order</div> <span className='finalprc'>2550 KES</span></button>
+    <input type='text' id='doc-id' value={!!isCartID && isCartID.map((crt) => {return crt.id })} hidden/>
+    <Link onClick={handleOrder}>
+    <button type='button' className='btn_orders' onClick={handleModal}><div><icons.Cart3/> Place Order</div> <span className='finalprc' id='ttprcs'>0.00 KES</span></button>
     </Link>
     </div>
     
@@ -151,21 +239,30 @@ const Cart = () => {
      <h3 className='header-cart'><icons.Cart3 className='cart-icon'/> Cart</h3>
      <div style={{display: 'flex', justifyContent: 'space-between', paddingRight: '10px', paddingLeft: '10px'}}>
         <h5>Product details</h5>
-        <h5>{!!isCartID && isCartID.length} Products</h5>
+        <h5><span id='pdl'></span> Products</h5>
      </div>
      <div className='container-row' id='cart-scroll'>
-     {!!isCartID
+     {!!isCartID && isCartID.length > 0 
      ? 
-     isCartID.map((crt) => {
-      console.log(crt)
+     !!isCartID && isCartID.map((crt) => {
+      if(!!user){
+      if(crt.userid !== user.userid){
+        return !crt;
+      }
+      }
       return (
         <div className='cart-col'>
          <img src={!!crt.cartdata.imeg ? crt.cartdata.imeg : Loading_icon} className='cart_img' alt='img_src'/>
         <div>
         <h5>{crt.cartdata.name}</h5>
-        <p><span className='price'>{crt.cartdata.sprice}</span> KES</p>
+        <p>
+         <span className='pricee' id={'prc-' + crt.id} style={{display: 'none'}}>{crt.cartdata.sprice}</span>
+         <span id={'prce-'+crt.id} className='crt-name' title={crt.cartdata.name}>{crt.cartdata.sprice}</span> KES
+        </p>
         <div>
-         <input type='number' className='cart_input' placeholder='0' id='cart-input'/>
+          <input type='button' className={crt.cartdata.sprice} value='+' onClick={handleAddProductCart} id={crt.id}/>
+          <input type='number' className='cart-input' id={'crt-' + crt.id} style={{border: 'none', outline: 'none'}} placeholder='1' readOnly/>
+          <input type='button' className={crt.cartdata.sprice} value='—' onClick={handleMinusProductCart} id={crt.id}/> 
         </div>
         </div>
         <Link className='xlg-link' id={crt.id} onClick={handleDelete}><icons.XLg id={crt.id} onClick={handleDelete}/></Link>
@@ -173,14 +270,13 @@ const Cart = () => {
       );
      })
      :
-     <img src={Loading_icon} className='img' alt='Loading_icon'/>
+     <img src={Loading_icon} className='imgss' alt='Loading_icon'/>
      }
 
      </div>
-
     </div>
 
-    <button type='button' className='btn_order' onClick={handleModal}><div><icons.Cart3/> Confirm Order</div> <span className='finalprc' id='fnlprc'>3000 KES</span></button>
+    <button type='button' className='btn_order' onClick={handleModal}><div><icons.Cart3/> Confirm Order</div> <span className='finalprc' id='fnlprcs'>0.00 KES</span></button>
     </div>
   )
 }

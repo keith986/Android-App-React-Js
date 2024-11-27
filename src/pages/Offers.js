@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import * as icons from 'react-bootstrap-icons'
 import $ from 'jquery'
 import Loading_icon from '../images/Loading_icon.gif'
-import { collection, doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '../firebase'
 import { toast } from 'react-toastify'
+import {UserContext} from '../context/UserContext'
 
 const Offers = () => {
-
+    const {user} = useContext(UserContext)
     const navigate = useNavigate();
 
     const [isModal, setIsModal] = useState(false);
@@ -59,8 +60,9 @@ const Offers = () => {
     const colRef = doc(db, "products", e.target.id);
     const docSnap = await getDoc(colRef);
 
-      await setDoc(doc(db, 'cart', e.target.id), {
-                    cartdata : docSnap.data()
+      await addDoc(collection(db, 'cart'), {
+                    cartdata : docSnap.data(),
+                    userid : !!user && user.userid
                   })
                   .then((res) => {
                     toast.success('added to cart')
@@ -121,7 +123,7 @@ const Offers = () => {
       </Link> 
     </div>
       <div className='modal-body'>
-      {!!Prdt 
+      {!!Prdt && Prdt.length > 0
       ?
        Prdt.map((dt) => {
         if(dt.offer !== 'Yes'){

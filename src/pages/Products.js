@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { db } from '../firebase'
-import { collection, doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, onSnapshot } from 'firebase/firestore'
 import Loading_icon from '../images/Loading_icon.gif'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import * as icons from 'react-bootstrap-icons'
+import {UserContext} from '../context/UserContext'
 
 const Products = () => {
-  
+  const {user} = useContext(UserContext)
   const [Prdt, setPrdt] = useState([])
   const [isModal, setIsModal] = useState(false)
   const [viewPrdt, setViewPrdt] = useState([])
@@ -27,12 +28,13 @@ const Products = () => {
       fetchProducts()  
   }, [])
 
-  const addToCart = async (e) => {
+const addToCart = async (e) => {
     const colRef = doc(db, "products", e.target.id);
     const docSnap = await getDoc(colRef);
 
-    await setDoc(doc(db, 'cart', e.target.id), {
-                  cartdata : docSnap.data()
+    await addDoc(collection(db, 'cart'), {
+                  cartdata : docSnap.data(),
+                  userid: !!user && user.userid
                 })
                 .then((res) => {
                   toast.success('added to cart')
@@ -80,7 +82,7 @@ const handleCloseModal = () => {
     </div>
 
       <div className='container-rowss'>
-      {!!Prdt 
+      {!!Prdt && Prdt.length > 0
       ?
        Prdt.map((dt) => {
           return (

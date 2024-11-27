@@ -30,7 +30,7 @@ import AllProducts from './pages/AllProducts.js';
 import AllCategories from './pages/AllCategories.js';
 
 //connect to backend
-Axios.defaults.baseURL = 'http://localhost:5000/';
+Axios.defaults.baseURL = 'http://localhost:7000/';
 Axios.defaults.withCredentials = true;
 
 function App() {

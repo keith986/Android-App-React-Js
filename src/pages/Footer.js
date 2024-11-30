@@ -33,7 +33,7 @@ const Footer = () => {
         </Link> 
 
         <Link className='div' to={'/cart'}>
-        <icons.CartFill className='fot' /> 
+        <icons.CartFill className='fot' />
         <code>Cart</code>
         </Link>
 

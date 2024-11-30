@@ -1151,6 +1151,139 @@ width: 100vw;
   max-height: 100%;
 }
 
+.column{
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin-top: 13%;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.col{
+  display: flex;
+  width: 100%;
+}
+
+.col > p{
+  margin-left: 20px;
+}
+
+.col-pr{
+  width: 100%;
+  background: #fff;
+  color: #000;
+  padding: 5px;
+  font-weight: bold;
+  align-items: center;
+  text-align: center;
+}
+
+.pr{
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.tr {
+  padding: 10px;
+  text-align: center;
+  border: 1px dotted #000;
+}
+
+.col-line{
+  border-left: 10px solid #000;
+  height: 50px;
+  margin-left: 10px;
+}
+
+.prc-col{
+  box-shadow: 0 0 1px 1px gray;
+  width: 90%;
+  align-items: center;
+  align-self: center;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #000;
+  margin-bottom: 10px;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+#sticky{
+  position: fixed;
+  width: 100%;
+}
+
+#ord-prv{
+  display: none;
+  position: fixed;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  z-index: 5000;
+  background: #ececec;
+  bottom: 0;
+  top: 0;
+}
+
+#ord-list{
+  width: 100%;
+  margin-top: 25%;
+}
+
+.ord-nav{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-decoration: none;
+  color: #000;
+}
+
+.ord-nav-nav{
+  background-color: #fff;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+.ord-nav-nav > .row > h4{
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.ord-nav-nav > .row > span{
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-size: 14px;
+}
+
+.btn_ord{
+  width: 100%;
+  padding: 10px;
+  color: #fff;
+  background: rgb(227, 15, 15);
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 0 2px 2px rgb(233, 231, 231);
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.btn_ords{
+  width: 100%;
+  padding: 10px;
+  color: #fff;
+  background: #000;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 0 2px 2px rgb(165, 163, 163);
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.table{
+  margin-bottom: 10px;
+  overflow: auto;
+  width: 100%;
+}
+
 @media  screen and (min-width : 769px) {
   .log-in > .login-icn {
     display: none;

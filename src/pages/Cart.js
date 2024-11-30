@@ -13,6 +13,10 @@ const Cart = () => {
     const navigate = useNavigate()
     const [isModal, setIsModal] = useState(false)
     const [isCartID, setIsCartID] = useState([]) 
+    const [isChecked, setIsChecked] = useState({
+      method : '',
+      reference: ''
+    })
 
     const handleClick = async () => {
         $('.container-row').animate({
@@ -136,42 +140,82 @@ const Cart = () => {
     document.getElementById('ttprcs').innerHTML = to_tal.toLocaleString();
     document.getElementById('fnlprc').innerHTML = ttl.toLocaleString();
     document.getElementById('fnlprcs').innerHTML = ttl.toLocaleString();
+
+    var fnlprc = document.getElementById('fnlprc').innerHTML;
+    if(fnlprc <= 0){
+      document.getElementById('btn-ord').disabled = true;
+      document.getElementById('btn-ord').style.backgroundColor = 'gray'
+    }else{
+      document.getElementById('btn-ord').disabled = false;
+      document.getElementById('btn-ord').style.backgroundColor = 'rgb(18, 192, 38)';
+    }
   
   }, [isCartID]) 
   
+  const handleChecked = (e) => {
+    setIsChecked({...isChecked, [e.target.name]: [e.target.value]})
+  }
+
+  //check here
   const handleOrder = async() => {
     const dta = [];
     var elem = document.getElementsByClassName('crt-name');
     var disc = document.getElementById('disoff').innerHTML;
     var ttl = document.getElementById('ttprc').innerHTML;
-    var docID = document.getElementById('doc-id').value;
 
-    for(var i=0; i < elem.length; i++){
+    for(var i = 0 ; i < elem.length ; i++){
       dta.push({name : elem[i].title, amt : elem[i].innerText}) 
     }  
 
-    await addDoc(collection(db, 'orders'),{
-                   userid : !!user && user.userid,
-                   order: dta,
-                   discount : disc,
-                   total: ttl
-                 })
-          .then((res) => {
-            deleteDoc(doc(db, 'cart', docID))
-                     .then((res) => { 
-                      toast.success('Ordered successfully')
-                      navigate('/orders')
-                       })
-                     .catch((err) => {toast.error(err.message)})
-          })
-          .catch((err) => toast.error(err.message))
+    const inv_oice = Math.floor(Math.random() * '0123456789');
+ 
+    if(isChecked.method.toString() !== ''){
+      if(isChecked.method.toString() === 'cash'){
+        await addDoc(collection(db, 'orders'),{
+                     userid : !!user && user.userid,
+                     order: dta,
+                     discount : disc,
+                     total: ttl,
+                     inovice : inv_oice,
+                     method: isChecked.method.toString()
+                    })
+                    .then((res) => {
+                     toast.success('Ordered successfully');
+                     navigate('/orders')
+                      })
+                    .catch((err) => toast.error(err.message))
+      }else{
+        if(isChecked.reference.toString() !== ''){
+          await addDoc(collection(db, 'orders'),{
+                        userid : !!user && user.userid,
+                        order: dta,
+                        discount : disc,
+                        total: ttl,
+                        inovice : inv_oice,
+                        method: isChecked.method.toString(),
+                        reference: isChecked.reference.toString()
+                      })
+                      .then((res) => {
+                        $('.xlg-link').each(() => {
+                          $(this).trigger('click')
+                        })
+                        toast.success('Ordered successfully')
+                        navigate('/orders')
+                      })
+                      .catch((err) => toast.error(err.message))
+        }else{
+          toast.info('Enter Mpesa transaction code')
+        }
+      }
+    }else{
+      toast.info('Select payment method')
+    }
+
   }
  
-
-  
   return (
-    <div id='cart'>
-    
+  <div id='cart'>
+   
     <div className={isModal ? 'open-modal' : 'close-modal'}>
     <div className='back-bg'>
       <Link  onClick={closeModal}>
@@ -180,7 +224,6 @@ const Cart = () => {
     </div> 
     <div className='modal-header'> 
       <h3 className='header-cart'>Review and Pay</h3>
-
       <div className='modal-total'>
         <p>Order Value</p>
         <span id='fnlprc'>0.00 KES</span>
@@ -197,12 +240,11 @@ const Cart = () => {
       <div className='modal-pay'>
        <button className='lipa'>
        <div>
-       <input type='checkbox'/>
+       <input type='checkbox' name='method' value='mpesa' onChange={handleChecked}/>
         Lipa na Mpesa
        </div> 
        <icons.ChevronDown onClick={handleLipa} style={{fontSize: '20px'}} />
-       </button>
-       
+       </button> 
        <div id='payd'>
        <div className='mpesa'>
         <h3>BUY GOOD AND SERVICES</h3>
@@ -215,33 +257,32 @@ const Cart = () => {
         <input type='number' className='paybill'/>
         </div>
         <p>Tech Store</p>
-        <input type='text' className='tcode' placeholder='Enter Mpesa Transaction Code'/>
+        <input type='text' className='tcode' placeholder='Enter Mpesa Transaction Code' name='reference'/>
        </div>
        </div>
-
       </div>
       <div className='modal-pay' style={{marginTop: '5px'}}>
-      <button className='lipa'><div><input type='checkbox'/> Cash on Delivery</div> <icons.Wallet2 style={{fontSize: '20px'}}/></button>
+      <button className='lipa'><div><input type='checkbox' name='method' value='cash' onChange={handleChecked}/> Cash on Delivery</div> <icons.Wallet2 style={{fontSize: '20px'}}/></button>
       </div>
     </div>
-    <input type='text' id='doc-id' value={!!isCartID && isCartID.map((crt) => {return crt.id })} hidden/>
+    <input type='text' id='doc-id' value={!!isCartID && isCartID.map((crt) => crt.id )} hidden/>
     <Link onClick={handleOrder}>
     <button type='button' className='btn_orders' onClick={handleModal}><div><icons.Cart3/> Place Order</div> <span className='finalprc' id='ttprcs'>0.00 KES</span></button>
     </Link>
     </div>
-    
+
     <div>
-     <div className='back-bg'>
+    <div className='back-bg'>
         <Link  onClick={handleClick}>
         <icons.ChevronRight className='back'/>
         </Link>
-     </div>
-     <h3 className='header-cart'><icons.Cart3 className='cart-icon'/> Cart</h3>
-     <div style={{display: 'flex', justifyContent: 'space-between', paddingRight: '10px', paddingLeft: '10px'}}>
+    </div>
+    <h3 className='header-cart'><icons.Cart3 className='cart-icon'/> Cart</h3>
+    <div style={{display: 'flex', justifyContent: 'space-between', paddingRight: '10px', paddingLeft: '10px'}}>
         <h5>Product details</h5>
         <h5><span id='pdl'></span> Products</h5>
-     </div>
-     <div className='container-row' id='cart-scroll'>
+    </div>
+    <div className='container-row' id='cart-scroll'>
      {!!isCartID && isCartID.length > 0 
      ? 
      !!isCartID && isCartID.map((crt) => {
@@ -272,12 +313,12 @@ const Cart = () => {
      :
      <img src={Loading_icon} className='imgss' alt='Loading_icon'/>
      }
-
-     </div>
+    </div>
     </div>
 
-    <button type='button' className='btn_order' onClick={handleModal}><div><icons.Cart3/> Confirm Order</div> <span className='finalprc' id='fnlprcs'>0.00 KES</span></button>
-    </div>
+    <button type='button' id='btn-ord' className='btn_order' onClick={handleModal}><div><icons.Cart3/> Confirm Order</div> <span className='finalprc' id='fnlprcs'>0.00 KES</span></button>
+  
+  </div>
   )
 }
 

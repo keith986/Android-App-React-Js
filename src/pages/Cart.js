@@ -158,6 +158,33 @@ const Cart = () => {
 
   //check here
   const handleOrder = async() => {
+    var date = new Date();
+    //calendar
+    var cur_date = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+    //time
+    var h = date.getHours();
+    var min = date.getMinutes();
+    var  sec = date.getSeconds();
+    var session = 'am';
+    if(h > 12){
+      h = h - 12;
+      session = 'pm';
+    }
+    if(min < 10){
+      min = '0' + min;
+    }
+    if(sec < 10){
+      sec = '0' + sec;
+    }
+    //day of the week
+    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var day = date.getDay();
+    var cur_day = days[day];
+
+    var calendar = h + ':' + min + ':' + sec + session + ' ' + cur_day + ', ' + cur_date + '/' + month + '/' + year;
+
     const dta = [];
     var elem = document.getElementsByClassName('crt-name');
     var disc = document.getElementById('disoff').innerHTML;
@@ -177,12 +204,14 @@ const Cart = () => {
                      discount : disc,
                      total: ttl,
                      inovice : inv_oice,
-                     method: isChecked.method.toString()
+                     method: isChecked.method.toString(),
+                     calender : calendar,
+                     progress: 'Pending'
                     })
                     .then((res) => {
                      toast.success('Ordered successfully');
                      navigate('/orders')
-                      })
+                     })
                     .catch((err) => toast.error(err.message))
       }else{
         if(isChecked.reference.toString() !== ''){

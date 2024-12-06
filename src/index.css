@@ -360,7 +360,7 @@ font-size: 16px;
 .open-modal{
   width: 100vw;
   display: block;
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 8%;
   z-index: 5000;
@@ -520,7 +520,7 @@ overflow-x: hidden;
 }
 
 #myModal{
-  position: absolute;
+  position: fixed;
   bottom: 0;
   height: 100vh;
 }
@@ -1007,7 +1007,7 @@ overflow-x: hidden;
   width: 350px;
   overflow-y: auto;
   overflow-x: hidden;
-  position: absolute;
+  position: fixed;
   right: 0;
   bottom : 0;
   z-index: 6000;
@@ -1021,7 +1021,7 @@ overflow-x: hidden;
   width: 350px;
   overflow-y: auto;
   overflow-x: hidden;
-  position: absolute;
+  position: fixed;
   right: 0;
   bottom : 0;
   z-index: 6000;
@@ -1108,7 +1108,7 @@ width: 100vw;
   cursor: pointer;
 }
 
-#add-user:hover {
+#add-user:hover{
   opacity: 0.7;
 }
 
@@ -1195,9 +1195,9 @@ width: 100vw;
 }
 
 .col-line{
-  border-left: 10px solid #000;
+  border-left: 10px double gray;
   height: 50px;
-  margin-left: 10px;
+  margin-left: 25px;
 }
 
 .prc-col{
@@ -1267,6 +1267,11 @@ width: 100vw;
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+.btn_canc{
+  display: none;
+  visibility: hidden;
+}
+
 .btn_ords{
   width: 100%;
   padding: 10px;
@@ -1282,6 +1287,84 @@ width: 100vw;
   margin-bottom: 10px;
   overflow: auto;
   width: 100%;
+}
+
+.rd{
+  height: 50px;
+  width: 50px;
+  accent-color: #ba8c63;
+}
+
+.badg{
+  background: pink;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+  border-radius: 30px;
+  font-size: 14px;
+  margin-top: 5px;
+  color: gray;
+}
+
+.prog{
+  background: goldenrod;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+  border-radius: 30px;
+  font-size: 14px;
+  margin-top: 5px;
+  color: #fff;
+}
+
+.rout{
+  background: rgb(100, 218, 32);
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+  border-radius: 30px;
+  font-size: 14px;
+  margin-top: 5px;
+  color: #fff;
+}
+
+.deliv{
+  background: rgb(18, 192, 38);
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+  border-radius: 30px;
+  font-size: 14px;
+  margin-top: 5px;
+  color: #fff;
+}
+
+.canc{
+  background: rgb(227, 15, 15);
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+  border-radius: 30px;
+  font-size: 14px;
+  margin-top: 5px;
+  color: #fff;
+}
+
+.nul{
+  display: none;
+  visibility:hidden;
+}
+
+#clrd, #clrs{
+  border-color: #ba8c63;
+}
+
+#bod{
+  border-bottom: 3px solid #ba8c63;
+}
+
+#nobod{
+  border: none;
 }
 
 @media  screen and (min-width : 769px) {

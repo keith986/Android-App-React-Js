@@ -14,6 +14,7 @@ const Orders = () => {
     const [isOrderData, setIsOrderData] = useState({})
     const [orderItem, setOrderItem] = useState([])
     const [isProd, setIsProd] = useState([])
+    const [selectedOrd, setSelectedOrd] = useState(false)
 
     const fetchOrders = async() => {
       const colRef = collection(db, 'orders')
@@ -64,10 +65,54 @@ const Orders = () => {
                       setOrderItem(result.data().order)
                   })
                   .catch((err) => {toast.error(err.message)})
+/*
+                  if(document.getElementById('chek')){
+                    document.getElementById('chek').disabled = false;
+                    $('#chek').trigger('click');
+                  }
+            
+                  if(document.getElementById('cheks')){
+                    document.getElementById('cheks').disabled = false;
+                    $('#cheks').trigger('click');
+                  }
+                     
+                  if(document.getElementById('chekd')){
+                    document.getElementById('chekd').disabled = false;
+                    $('#chekd').trigger('click');
+                  }
+  */
     }
 
+    useEffect(() => {
+      if(document.getElementById('chek')){
+        document.getElementById('chek').disabled = false;
+        $('#chek').trigger('click');
+      }else{
+        document.getElementById('no-chek').disabled = true;
+        document.getElementById('no-chek').checked = false;
+      } 
+
+      if(document.getElementById('cheks')){
+        document.getElementById('cheks').disabled = false;
+        $('#cheks').trigger('click');
+      }else{
+        document.getElementById('no-cheks').disabled = true;
+        document.getElementById('no-cheks').checked = false;
+      } 
+         
+      if(document.getElementById('chekd')){
+        document.getElementById('chekd').disabled = false;
+        $('#chekd').trigger('click');
+      }else{
+        document.getElementById('no-chekd').disabled = true;
+        document.getElementById('no-chekd').checked = false;
+      } 
+
+      setSelectedOrd(true)
+    }, [isOrderData])
+
     const handleOrderModal =() => {
-      // document.getElementById('ord-prv').style.display = 'block';
+      setIsOrderData([]);
       $('#ord-list').animate({
        width: 'toggle'
       }, 500)
@@ -82,6 +127,14 @@ const Orders = () => {
                      .catch((err) => {toast.error(err.message)})
     }
 
+    const handleActiveOrders = () => {
+      setSelectedOrd(true)
+    }
+
+    const handleCanceledOrders = () => {
+      setSelectedOrd(false)
+    }
+
   return (
     <div id='orders'>
     <div className='open-modal' id='myModals'>
@@ -92,11 +145,11 @@ const Orders = () => {
       </Link> 
     </div> 
     <div className='modal-scroll'> 
-      <Link className='ords'>
-        <p>Current Orders</p>
+      <Link className='ords' onClick={handleActiveOrders} id={selectedOrd ? 'bod' : 'nobod'}>
+        <p>Active Orders</p>
       </Link>
-      <Link className='ords'>
-        <p>My Orders</p>
+      <Link className='ords' onClick={handleCanceledOrders} id={selectedOrd ? 'nobod' : 'bod'}>
+        <p>Canceled Orders</p>
       </Link>
     </div> 
     </div>
@@ -107,7 +160,7 @@ const Orders = () => {
     if(ord.userid !==  user.userid){
       return !ord; 
     }
-    
+ 
     return (
     <Link className='ord-nav'>
     <div className='ord-nav-nav'>
@@ -116,15 +169,32 @@ const Orders = () => {
       <h4>{ord.inovice}</h4>
       </div>
       <div className='row'>
-      <span>Order made on:</span>
-      <span style={{color: 'gray'}}>11:00 a.m , 28/ 11/ 2024</span>
+      <span>Due date:</span>
+      <span style={{color: 'gray'}}>{ord.calender}</span>
+      </div>
+      <div className='row'>
+        <div>
+         <span className={ord.progress === 'Pending' ? '' : 'nul'}><icons.ThreeDots className='badg'/></span>
+         <span className={ord.progress === 'in progress' ? '' : 'nul'}><icons.BarChartLineFill className='prog'/></span>
+         <span className={ord.progress === 'in route' ? '' : 'nul'}><icons.Truck className='rout'/></span>
+         <span className={ord.progress === 'delivered' ? '' : 'nul'}><icons.Check2Square className='deliv'/></span>
+         <span className={ord.progress === 'canceled' ? '' : 'nul'}><icons.XCircleFill className='canc'/></span>
+        </div>
+        <div>
+         <span className={ord.progress === 'Pending' ? 'badg' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'in progress' ? 'prog' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'in route' ? 'rout' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'delivered' ? 'deliv' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'canceled' ? 'canc' : 'nul'}>{ord.progress}</span>
+        </div>
       </div>
       <br/>
       <input type='button' className='btn_ords' id={ord.id} onClick={handleOrderPrv} value='View Order'/>
-      <input type='button' className='btn_ord' id={ord.id} onClick={handleOrderDel} value='Cancel Order'/>
+      <input type='button' className={ord.progress === 'canceled' || ord.progress === 'delivered' ? 'btn_canc' : 'btn_ord' } id={ord.id} onClick={handleOrderDel} value='Cancel Order'/>
     </div>
     </Link>
     );
+
    })}
   </div>
 
@@ -134,19 +204,19 @@ const Orders = () => {
       <icons.ChevronRight className='back'/>
       </Link> 
     </div> 
-   <div className='column'>
-    <div className='col'>
-    <input type='radio' className='rd'/>
-    <p>in progress</p>
+    <div className='column'>
+    <div className='col'> 
+     <input type='radio' className='rd'  id={!!isOrderData ? isOrderData.progress === 'in progress' || isOrderData.progress === 'in route' || isOrderData.progress === 'delivered' ? 'chek' : 'no-chek' : 'no-chek'}  disabled/>
+     <p>in progress</p>
     </div>
-    <div className='col-line'></div>
+    <div className='col-line' id={!!isOrderData ? isOrderData.progress === 'in progress' || isOrderData.progress === 'in route' || isOrderData.progress === 'delivered' ? 'clrd' : '' : ''}></div>
     <div className='col'>
-    <input type='radio' className='rd'/>
+    <input type='radio' className='rd' id={!!isOrderData ? isOrderData.progress === 'in route' || isOrderData.progress === 'delivered' ? 'cheks' : 'no-cheks' : 'no-cheks'} disabled/>
     <p>in route</p>
     </div>
-    <div className='col-line'></div>
+    <div className='col-line' id={!!isOrderData ? isOrderData.progress === 'in route' || isOrderData.progress === 'delivered' ? 'clrs' : '' : ''}></div>
     <div className='col'>
-    <input type='radio' className='rd'/>
+    <input type='radio' className='rd' id={!!isOrderData && isOrderData.progress === 'delivered' ? 'chekd' : 'no-chekd'} disabled/>
     <p>Delivered</p>
     </div>
     
@@ -191,7 +261,7 @@ const Orders = () => {
     </div>
     </div>
 
-   </div>
+    </div>
   </div>
 
     </div>

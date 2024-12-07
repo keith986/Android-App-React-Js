@@ -29,7 +29,7 @@ const User = () => {
         <h3>{!!user && user.username}</h3>
      </div>
      <Link to='/notifications'>
-     <icons.BellFill className='cart-icon'/>
+     <icons.BellFill className='cart-icon' id='notif-bell'/>
      </Link>
     </div>
     <div className='user-cols'>

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import $ from 'jquery'
 import * as icons from 'react-bootstrap-icons'
 import { db } from '../firebase'
-import { collection, deleteDoc, doc, getDoc, onSnapshot } from 'firebase/firestore'
+import { collection,doc, getDoc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 import { UserContext } from '../context/UserContext'
 
@@ -14,11 +14,12 @@ const Orders = () => {
     const [isOrderData, setIsOrderData] = useState({})
     const [orderItem, setOrderItem] = useState([])
     const [isProd, setIsProd] = useState([])
-    const [selectedOrd, setSelectedOrd] = useState(false)
+    const [selectedOrd, setSelectedOrd] = useState('active')
 
     const fetchOrders = async() => {
       const colRef = collection(db, 'orders')
-      await onSnapshot(colRef, (snapshot) => {
+      const qRef = query(colRef, orderBy('calender'))
+      await onSnapshot(qRef, (snapshot) => {
         let orderID = [];
     
         snapshot.docs.forEach((doces) => {
@@ -107,8 +108,7 @@ const Orders = () => {
         document.getElementById('no-chekd').disabled = true;
         document.getElementById('no-chekd').checked = false;
       } 
-
-      setSelectedOrd(true)
+      setSelectedOrd('active') 
     }, [isOrderData])
 
     const handleOrderModal =() => {
@@ -120,19 +120,25 @@ const Orders = () => {
     }
 
     const handleOrderDel = async (ev) => {
-      await deleteDoc(doc(db, 'orders', ev.target.id))
+      await updateDoc(doc(db, 'orders', ev.target.id),{
+                        progress: 'cancelled'
+                     })
                      .then((result) => {
-                      toast.success('Deleted successfully')
+                      toast.success('Cancelled successfully')
                      })
                      .catch((err) => {toast.error(err.message)})
     }
 
     const handleActiveOrders = () => {
-      setSelectedOrd(true)
+      setSelectedOrd('active');
     }
 
     const handleCanceledOrders = () => {
-      setSelectedOrd(false)
+      setSelectedOrd('cancelled')
+    }
+
+    const handleCompleteOrders = () => {
+      setSelectedOrd('complete')
     }
 
   return (
@@ -145,19 +151,22 @@ const Orders = () => {
       </Link> 
     </div> 
     <div className='modal-scroll'> 
-      <Link className='ords' onClick={handleActiveOrders} id={selectedOrd ? 'bod' : 'nobod'}>
-        <p>Active Orders</p>
+      <Link className='ords' to='/orders/#active' onClick={handleActiveOrders} id={selectedOrd === 'active' ? 'bod' : 'nobod'}>
+        <p>Active</p>
       </Link>
-      <Link className='ords' onClick={handleCanceledOrders} id={selectedOrd ? 'nobod' : 'bod'}>
-        <p>Canceled Orders</p>
+      <Link className='ords' to='/orders/#completed' onClick={handleCompleteOrders} id={selectedOrd === 'complete' ? 'bod' : 'nobod'}>
+        <p>Completed</p>
+      </Link>
+      <Link className='ords' to='/orders/#cancelled' onClick={handleCanceledOrders} id={selectedOrd === 'cancelled' ? 'bod' : 'nobod'}>
+        <p>Cancelled</p>
       </Link>
     </div> 
     </div>
   
-  <div id='ord-list'>
+  <div className={selectedOrd === 'active' ? 'bod' : 'nobod'} id='ord-list'>
    {!!isOrders && isOrders.map((ord) => {
    
-    if(ord.userid !==  user.userid){
+    if(ord.userid !==  user.userid || ord.progress === 'cancelled' || ord.progress === 'delivered'){
       return !ord; 
     }
  
@@ -178,19 +187,107 @@ const Orders = () => {
          <span className={ord.progress === 'in progress' ? '' : 'nul'}><icons.BarChartLineFill className='prog'/></span>
          <span className={ord.progress === 'in route' ? '' : 'nul'}><icons.Truck className='rout'/></span>
          <span className={ord.progress === 'delivered' ? '' : 'nul'}><icons.Check2Square className='deliv'/></span>
-         <span className={ord.progress === 'canceled' ? '' : 'nul'}><icons.XCircleFill className='canc'/></span>
+         <span className={ord.progress === 'cancelled' ? '' : 'nul'}><icons.XCircleFill className='canc'/></span>
         </div>
         <div>
          <span className={ord.progress === 'Pending' ? 'badg' : 'nul'}>{ord.progress}</span>
          <span className={ord.progress === 'in progress' ? 'prog' : 'nul'}>{ord.progress}</span>
          <span className={ord.progress === 'in route' ? 'rout' : 'nul'}>{ord.progress}</span>
          <span className={ord.progress === 'delivered' ? 'deliv' : 'nul'}>{ord.progress}</span>
-         <span className={ord.progress === 'canceled' ? 'canc' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'cancelled' ? 'canc' : 'nul'}>{ord.progress}</span>
         </div>
       </div>
       <br/>
       <input type='button' className='btn_ords' id={ord.id} onClick={handleOrderPrv} value='View Order'/>
-      <input type='button' className={ord.progress === 'canceled' || ord.progress === 'delivered' ? 'btn_canc' : 'btn_ord' } id={ord.id} onClick={handleOrderDel} value='Cancel Order'/>
+      <input type='button' className={ord.progress === 'cancelled' || ord.progress === 'delivered' ? 'btn_canc' : 'btn_ord' } id={ord.id} onClick={handleOrderDel} value='Cancel Order'/>
+    </div>
+    </Link>
+    );
+
+   })}
+  </div>
+
+  <div className={selectedOrd === 'complete' ? 'bod' : 'nobod'} id='ord-list'>
+   {!!isOrders && isOrders.map((ord) => {
+   
+    if(ord.userid !==  user.userid || ord.progress !== 'delivered'){
+      return !ord; 
+    }
+ 
+    return (
+    <Link className='ord-nav'>
+    <div className='ord-nav-nav'>
+      <div className='row'>
+      <h4>INVOICE NO#</h4>
+      <h4>{ord.inovice}</h4>
+      </div>
+      <div className='row'>
+      <span>Due date:</span>
+      <span style={{color: 'gray'}}>{ord.calender}</span>
+      </div>
+      <div className='row'>
+        <div>
+         <span className={ord.progress === 'Pending' ? '' : 'nul'}><icons.ThreeDots className='badg'/></span>
+         <span className={ord.progress === 'in progress' ? '' : 'nul'}><icons.BarChartLineFill className='prog'/></span>
+         <span className={ord.progress === 'in route' ? '' : 'nul'}><icons.Truck className='rout'/></span>
+         <span className={ord.progress === 'delivered' ? '' : 'nul'}><icons.Check2Square className='deliv'/></span>
+         <span className={ord.progress === 'cancelled' ? '' : 'nul'}><icons.XCircleFill className='canc'/></span>
+        </div>
+        <div>
+         <span className={ord.progress === 'Pending' ? 'badg' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'in progress' ? 'prog' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'in route' ? 'rout' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'delivered' ? 'deliv' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'cancelled' ? 'canc' : 'nul'}>{ord.progress}</span>
+        </div>
+      </div>
+      <br/>
+      <input type='button' className='btn_ords' id={ord.id} onClick={handleOrderPrv} value='View Order'/>
+      <input type='button' className={ord.progress === 'cancelled' || ord.progress === 'delivered' ? 'btn_canc' : 'btn_ord' } id={ord.id} onClick={handleOrderDel} value='Cancel Order'/>
+    </div>
+    </Link>
+    );
+
+   })}
+  </div>
+
+  <div className={selectedOrd === 'cancelled' ? 'bod' : 'nobod'} id='ord-list'>
+   {!!isOrders && isOrders.map((ord) => {
+   
+    if(ord.userid !==  user.userid || ord.progress !== 'cancelled'){
+      return !ord; 
+    }
+ 
+    return (
+    <Link className='ord-nav'>
+    <div className='ord-nav-nav'>
+      <div className='row'>
+      <h4>INVOICE NO#</h4>
+      <h4>{ord.inovice}</h4>
+      </div>
+      <div className='row'>
+      <span>Due date:</span>
+      <span style={{color: 'gray'}}>{ord.calender}</span>
+      </div>
+      <div className='row'>
+        <div>
+         <span className={ord.progress === 'Pending' ? '' : 'nul'}><icons.ThreeDots className='badg'/></span>
+         <span className={ord.progress === 'in progress' ? '' : 'nul'}><icons.BarChartLineFill className='prog'/></span>
+         <span className={ord.progress === 'in route' ? '' : 'nul'}><icons.Truck className='rout'/></span>
+         <span className={ord.progress === 'delivered' ? '' : 'nul'}><icons.Check2Square className='deliv'/></span>
+         <span className={ord.progress === 'cancelled' ? '' : 'nul'}><icons.XCircleFill className='canc'/></span>
+        </div>
+        <div>
+         <span className={ord.progress === 'Pending' ? 'badg' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'in progress' ? 'prog' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'in route' ? 'rout' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'delivered' ? 'deliv' : 'nul'}>{ord.progress}</span>
+         <span className={ord.progress === 'cancelled' ? 'canc' : 'nul'}>{ord.progress}</span>
+        </div>
+      </div>
+      <br/>
+      <input type='button' className='btn_ords' id={ord.id} onClick={handleOrderPrv} value='View Order'/>
+      <input type='button' className={ord.progress === 'cancelled' || ord.progress === 'delivered' ? 'btn_canc' : 'btn_ord' } id={ord.id} onClick={handleOrderDel} value='Cancel Order'/>
     </div>
     </Link>
     );

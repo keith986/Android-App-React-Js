@@ -15,7 +15,7 @@ const TopProducts = () => {
 
   async function fetchNewProducts () {
     const colRef = collection(db, "products")
-    onSnapshot(colRef, (snapShot) => {
+    await onSnapshot(colRef, (snapShot) => {
             let pro_ducts = [];
             snapShot.docs.forEach((snaps) => {
                pro_ducts.push({...snaps.data(), id: snaps.id})
@@ -69,7 +69,7 @@ const TopProducts = () => {
           </div>
           <div className='modal-body'>
           <div className='modal-header'>
-          <h1>{viewPrdt.name}</h1>
+           <h1>{viewPrdt.name}</h1>
             <img src={!!viewPrdt ? viewPrdt.imeg : Loading_icon} alt='alt_product' id='alimgs'/>
             </div>  
             <p>{viewPrdt.description}</p>

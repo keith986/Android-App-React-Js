@@ -74,14 +74,7 @@ const Notifications = () => {
       <code>#{ord.inovice}</code>
       </div>
       <div className='row'>
-      <span>Due date:</span>
-      <span style={{color: 'gray'}}>{ord.calender}</span>
-      </div>
-      <div className='row'>
-        <div>
-         <span className={ord.progress === 'delivered' ? '' : 'nul'}><icons.Check2Square className='deliv'/></span>
-         <span className={ord.progress === 'cancelled' ? '' : 'nul'}><icons.XCircleFill className='canc'/></span>
-        </div>
+        <div></div>
         <div>
          <span className={ord.progress === 'delivered' ? 'deliv' : 'nul'}>{ord.progress}</span>
          <span className={ord.progress === 'cancelled' ? 'canc' : 'nul'}>{ord.progress}</span>

@@ -179,8 +179,8 @@ font-size: 16px;
   font-size: 20px;
   margin: 5px;
   position: absolute;
-  right: 63%;
-  top: 2%;
+  right: 64%;
+  top: 2.5%;
   color: #000;
 }
 
@@ -1379,6 +1379,10 @@ width: 100vw;
   animation: mybell 5s infinite;
 }
 
+#fil {
+  width: 100vw;
+}
+
 @keyframes mybell {
   0% {
     transform: rotateY(40deg);
@@ -1391,6 +1395,17 @@ width: 100vw;
     transform: rotateY(40deg);
     color: red;   
   }
+}
+
+#prc-loc{
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+#descr{
+  display : flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
 }
 
 @media  screen and (min-width : 769px) {
@@ -1420,12 +1435,13 @@ width: 100vw;
   }
   .search{
     align-items: center;
-    width: 100vw;
+    width: calc(100vw - 10px);
     border-radius: 20px;
+    margin-left: 2px;
   }
   .search-icon{
-    left: 0;
-    top: 0.5%;
+    left: 2%;
+    top: 4%;
   }
   #header{
     position: absolute;

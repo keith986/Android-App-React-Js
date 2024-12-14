@@ -4,12 +4,12 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "5",
-  appId: ""
+  apiKey: "AIzaSyDFpwEyEMddDh9FrT4KsD9K7ueN3V8oApY",
+  authDomain: "onlinestore-eaac7.firebaseapp.com",
+  projectId: "onlinestore-eaac7",
+  storageBucket: "onlinestore-eaac7.firebasestorage.app",
+  messagingSenderId: "581738163852",
+  appId: "1:581738163852:web:b876e890d0f5eba692d5a9"
 };
 
 

@@ -132,12 +132,12 @@ const Offers = () => {
 
         var disc = Math.floor(dt.discount * dt.sprice / 100);
         var sum = parseFloat(disc + parseInt(dt.sprice))
- 
+        const sPrc = parseInt(dt.sprice)
           return (
             <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
             <img src={!!dt.imeg ? dt.imeg : Loading_icon} className='img' alt='img_src' id={dt.id} onClick={handleViewProduct}/>
             <h4>{dt.name}</h4>
-            <p>{dt.sprice} KES <sup style={{color: 'red'}}><del>{sum}</del></sup></p>
+            <p>{sPrc.toLocaleString()} KES <sup style={{color: 'red'}}><del>{sum}</del></sup></p>
             <button className='add-to-cart' id={dt.id} onClick={addToCart}>Add to Cart</button>
             </div>
           );

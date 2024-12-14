@@ -6,12 +6,11 @@ const FooterDirectory = ({children}) => {
     const [isLocs, setIsLocs] = useState(false);
 
     useEffect(() => {
-        if(location.pathname === '/login' || location.pathname === '/signup' || location.pathname === '/' || location.pathname === '/admin' || location.pathname === '/allusers' || location.pathname === '/allcategories' || location.pathname === '/allproducts' || location.pathname === '/verify'){
+        if(location.pathname === '/login' || location.pathname === '/signup' || location.pathname === '/' || location.pathname === '/admin' || location.pathname === '/allusers' || location.pathname === '/allcategories' || location.pathname === '/allproducts' || location.pathname === '/verify' || location.pathname === '/allcategories' || location.pathname === '/allproducts' || location.pathname === '/cart' || location.pathname === '/categories'){
             setIsLocs(false)
         }else{
             setIsLocs(true)
         }
-
     }, [location])
 
   return (

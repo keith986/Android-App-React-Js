@@ -18,7 +18,7 @@ const Orders = () => {
 
     const fetchOrders = async() => {
       const colRef = collection(db, 'orders')
-      const qRef = query(colRef, orderBy('calender'))
+      const qRef = query(colRef, orderBy('createdAt', "desc"))
       await onSnapshot(qRef, (snapshot) => {
         let orderID = [];
     

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { auth, db } from '../firebase'
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "firebase/auth";
 import { toast } from 'react-toastify'
@@ -13,6 +13,7 @@ const {user} = useContext(UserContext)
 
 const navigate = useNavigate()
 
+useEffect(() => {
 if(user){
   if(user.role === 'customer'){
     navigate('/dashboard')
@@ -20,6 +21,7 @@ if(user){
     navigate('/admin')
   }
 }
+}, [navigate, user])
 
 const [isCredentials, setIsCredientials] = useState({
   email : '',

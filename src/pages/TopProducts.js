@@ -88,11 +88,12 @@ const TopProducts = () => {
           if(dt.new !== 'Yes'){
                return !dt;
           }
+          const sPrc = parseInt(dt.sprice)
           return (
             <div className='row-col'>
             <img src={!!dt.imeg ? dt.imeg : Loading_icon} className='img' alt='img_src' id={dt.id} onClick={handleViewProduct}/>
             <h4>{dt.name}</h4>
-            <p>{dt.sprice} KES <span id='badge'>new</span></p>
+            <p>{sPrc.toLocaleString()} KES <span id='badge'>new</span></p>
             <button className='add-to-cart' id={dt.id} onClick={addToCart}>Add to Cart</button>
             </div>
           );

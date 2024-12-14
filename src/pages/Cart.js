@@ -4,7 +4,7 @@ import $ from 'jquery'
 import * as icons from 'react-bootstrap-icons'
 import { db } from '../firebase'
 import Loading_icon from '../images/empty.png'
-import { addDoc, collection, deleteDoc, doc, onSnapshot } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 import {UserContext} from '../context/UserContext'
 
@@ -24,8 +24,8 @@ const Cart = () => {
         });
 
         setTimeout(() => {
-            navigate('/')
-        }, 500)
+          navigate('/')
+        })
     } 
 
     const handleModal =  async() => {
@@ -184,11 +184,12 @@ const Cart = () => {
     var cur_day = days[day];
 
     var calendar = h + ':' + min + ':' + sec + session + ' ' + cur_day + ', ' + cur_date + '/' + month + '/' + year;
-
+ 
     const dta = [];
     var elem = document.getElementsByClassName('crt-name');
     var disc = document.getElementById('disoff').innerHTML;
     var ttl = document.getElementById('ttprc').innerHTML;
+    var delid = document.getElementsByClassName('xlg-link');
 
     for(var i = 0 ; i < elem.length ; i++){
       dta.push({name : elem[i].title, amt : elem[i].innerText}) 
@@ -206,13 +207,22 @@ const Cart = () => {
                      inovice : inv_oice,
                      method: isChecked.method.toString(),
                      calender : calendar,
-                     progress: 'Pending'
+                     progress: 'Pending',
+                     createdAt: serverTimestamp()
                     })
                     .then((res) => {
                      toast.success('Ordered successfully');
                      navigate('/orders')
+
                      })
-                    .catch((err) => toast.error(err.message))
+                    .catch((err) => toast.error(err.message));
+        
+          for(var j = 0; j < delid.length; j++){
+            deleteDoc(doc(db, 'cart', delid[j].id))
+                     .then((res) => {console.log('Yeey')})
+                     .catch((err) => {console.log(err.message)})
+          }
+
       }else{
         if(isChecked.reference.toString() !== ''){
           await addDoc(collection(db, 'orders'),{
@@ -322,7 +332,7 @@ const Cart = () => {
       }
       return (
         <div className='cart-col'>
-         <img src={!!crt.cartdata.imeg ? crt.cartdata.imeg : Loading_icon} className='cart_img' alt='img_src'/>
+        <img src={!!crt.cartdata.imeg ? crt.cartdata.imeg : Loading_icon} className='cart_img' alt='img_src'/>
         <div>
         <h5>{crt.cartdata.name}</h5>
         <p>
@@ -335,7 +345,7 @@ const Cart = () => {
           <input type='button' className={crt.cartdata.sprice} value='—' onClick={handleMinusProductCart} id={crt.id}/> 
         </div>
         </div>
-        <Link className='xlg-link' id={crt.id} onClick={handleDelete}><icons.XLg id={crt.id} onClick={handleDelete}/></Link>
+        <input type='button' className='xlg-link' id={crt.id} onClick={handleDelete} value='X'/> 
         </div>    
       );
      })

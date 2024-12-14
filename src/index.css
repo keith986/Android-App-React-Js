@@ -594,7 +594,12 @@ overflow-x: hidden;
 
 .xlg-link{
   text-decoration: none;
-  color: red;
+  background-color: red;
+  border: none;
+  border-radius: 50px;
+  height: 30px;
+  width: 30px;
+  color: #fff;
 }
 
 .modal-scroll {

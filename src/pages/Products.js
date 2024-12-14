@@ -85,11 +85,12 @@ const handleCloseModal = () => {
       {!!Prdt && Prdt.length > 0
       ?
        Prdt.map((dt) => {
+        const sPrc = parseInt(dt.sprice)
           return (
             <div className='row-cols' style={{background: '#fff', borderRadius: '10px'}}>
             <img src={!!dt.imeg ? dt.imeg : Loading_icon} className='img' alt='img_src' id={dt.id} onClick={handleViewProduct}/>
             <h4>{dt.name}</h4>
-            <p>{dt.sprice} KES</p>
+            <p>{sPrc.toLocaleString()} KES</p>
             <button className='add-to-cart' id={dt.id} onClick={addToCart}>Add to Cart</button>
             </div>
           );

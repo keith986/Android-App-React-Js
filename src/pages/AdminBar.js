@@ -49,7 +49,7 @@ const AdminBar = () => {
            <icons.Cart3 className='links-icn'/>
            <span>Products</span>
           </Link>
-          <Link className='links'>
+          <Link to='/allorders' className='links'>
            <icons.ListUl className='links-icn'/>
            <span>Orders</span>
           </Link>

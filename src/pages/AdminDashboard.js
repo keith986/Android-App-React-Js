@@ -23,7 +23,7 @@ const AdminDashboard = () => {
            <span>ORDERS</span>
            <div className='alt'>
            <h2>100</h2>
-           <icons.ListOl className='alt-icn'/>  
+           <icons.ListOl to={'/allorders'} className='alt-icn'/>  
            </div>
          </div>
          <div className='col-3'>

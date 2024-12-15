@@ -83,10 +83,10 @@ const AllCategories = () => {
           <th>name</th>
           <th>action</th>
       </tr>
-      {!!allProducts && allProducts.map((prd) => {
+      {!!allProducts && allProducts.map((prd, indx) => {
         return (
             <tr>
-                <td>{prd.id}</td>
+                <td>{indx + 1}</td>
                 <td>{prd.name}</td>
                 <td>
                  <button id={prd.id} onClick={handleDelete} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.Trash3Fill id={prd.id} onClick={handleDelete} className='td-icn' style={{color: 'rgb(227, 15, 15)', zIndex: '100'}} title='delete' /></button>

@@ -28,6 +28,7 @@ import AdminDashboard from './pages/AdminDashboard.js';
 import AllUsers from './pages/AllUsers.js';
 import AllProducts from './pages/AllProducts.js';
 import AllCategories from './pages/AllCategories.js';
+import AllOrders from './pages/AllOrders.js';
 
 //connect to backend
 Axios.defaults.baseURL = 'http://localhost:7000/';
@@ -70,6 +71,7 @@ function App() {
         <Route element={<AllProducts/>} path='/allproducts'/>
         <Route element={<Categories/>} path='/categories'/>
         <Route element={<AllCategories/>} path='/allcategories'/>
+        <Route element={<AllOrders/>} path='/allorders'/>
         <Route element={<Offers/>} path='/offers'/>
         <Route element={<Cart/>} path='/cart'/>
         <Route element={<User/>} path='/user'/> 

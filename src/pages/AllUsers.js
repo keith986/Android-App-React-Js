@@ -1,7 +1,6 @@
 import { collection, deleteDoc, doc, onSnapshot} from 'firebase/firestore'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { db } from '../firebase'
-import { UserContext } from '../context/UserContext'
 import * as icons from 'react-bootstrap-icons'
 import $ from 'jquery'
 import { toast } from 'react-toastify'
@@ -10,9 +9,10 @@ import Axios from 'axios'
 const AllUsers = () => {
     const [allAddress, setAllAddress] = useState([])
     const [allCustomers, setAllCustomers] = useState([])
-    const {user} = useContext(UserContext)
+    
 
     async function fetchCustomers() {
+    /*
         const colRef = collection(db, "customers")
         onSnapshot(colRef, (snapShot) => {
             let ctm = [];
@@ -21,6 +21,19 @@ const AllUsers = () => {
             })
             setAllCustomers(ctm)
         })
+    */
+       await Axios.get('/allusers')
+                  .then((response) => {
+                    console.log(response.data.success.users)
+                    if(response.data.success){
+                        setAllCustomers(response.data.success.users)
+                    }else if(response.data.error){
+                        toast.error(response.data.error)
+                    }
+                  })
+                  .catch((err) => {
+                    toast.error(err.message)
+                  })    
     }
 
     const fetchAddress = async () => {
@@ -79,29 +92,25 @@ const AllUsers = () => {
       <h4>Users informations</h4>
       <table className='table'>
         <tr>
-            <th>id</th>
-            <th>username</th>
+            <th>#</th>
             <th>email</th>
             <th>phone number</th>
             <th>address</th>
-            <th>role</th>
             <th>action</th>
         </tr>
        {!!allCustomers
          ?
-        !!allCustomers && allCustomers.map((customer) => {
-            if(customer.userid === user.userid){
+        !!allCustomers && allCustomers.map((customer, ind) => {
+            if(customer.displayName === 'admin'){
                  return !customer;
             }
             const thee_data = !!allAddress && allAddress.map((adrs) => {
                 return (
                     <tr>
-                    <td>{customer.userid}</td>
-                    <td>{customer.username}</td>
+                    <td>{ind + 1}</td>
                     <td>{customer.email}</td>
-                    <td>{customer.countrycode}{customer.phonenumber}</td>
+                    <td>{customer.phoneNumber}</td>
                     <td>{adrs.location},{adrs.city}</td>
-                    <td>{customer.role}</td>
                     <td>
                     <button id={customer.userid} onClick={handleDelete} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.Trash3Fill className='td-icn' style={{color: 'rgb(227, 15, 15)', zIndex: '100'}} title='delete' id={customer.userid} onClick={handleDelete}/></button>
                     </td>

@@ -18,7 +18,7 @@ const AllOrders = () => {
                    ord_ers.push({...snaps.data(), id: snaps.id})
                 })
             setIsOrders(ord_ers);
-        })
+        })  
     }
 
     const handleToggleEdit = async (e) => {

@@ -1,13 +1,19 @@
-import { collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore'
-import React, {  useEffect, useState } from 'react'
+import { collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore'
+import React, {  useContext, useEffect, useState } from 'react'
 import { db } from '../firebase'
 import * as icons from 'react-bootstrap-icons'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import $ from 'jquery'
+import { UserContext } from '../context/UserContext'
+import jsPDF from 'jspdf'
 
 const AllOrders = () => {
     const [isOrders, setIsOrders] = useState([])
+    const {user} = useContext(UserContext)
+    const [orderItems, setOrderItems] = useState([])
+    const [isProd, setIsProd] = useState([])
+    const [isOrderData, setIsOrderData] = useState({})
 
     const fetchOrders = async () => {
         const colRef = collection(db, "orders")
@@ -33,10 +39,21 @@ const AllOrders = () => {
         })
     }
 
+    const fetchProducts = async () => {
+         const qry = collection(db, 'products');
+         onSnapshot(qry, (snapshot) => {
+           let qrydt = [];
+           snapshot.docs.forEach((snaps) => {
+             qrydt.push({...snaps.data()})
+           })
+           setIsProd(qrydt)
+         })
+    }
+
     useEffect(() => {
         fetchOrders();
+        fetchProducts();
     }, [])
-
 
     const handleDelete = async (ev) => {
         await deleteDoc(doc(db, 'orders', ev.target.id))
@@ -96,9 +113,103 @@ const AllOrders = () => {
         }
     }
 
+    const handleReceipt = async(ev) => {
+        await getDoc(doc(db, 'orders', ev.target.id))
+                    .then((resp) => {
+                        $('#myModal').animate({
+                            width: 'toggle'
+                        })
+                        setIsOrderData(resp.data())
+                        setOrderItems(resp.data().order)
+                    })
+                    .catch((err) => toast.error(err.message))
+    }
+
+    const handleCloseMod = () => {
+        $('#myModal').animate({
+            width: 'toggle'
+        })
+    }
+
+    const handleDownload = () => {
+        $('#fot').hide();
+        const elemHtml = document.querySelector('#receipt');
+        let docPDF = new jsPDF();
+        docPDF.html(elemHtml,{
+          callback:function(docPDF){
+              docPDF.save('receipt.pdf');
+           },
+            x: 15,
+            y: 15,
+            width: 70,
+            windowWidth: 300
+        })
+        setTimeout(() => {
+          $('#fot').show();
+        }, 500)
+        $('#myModal').animate({
+            width: 'toggle'
+        })
+    }
+
     return (
     <div className='container-fluid' id='cont-fd'>
     
+       <div className='modal' id='myModal'> 
+            <div className='modal-content' id='receipt'> 
+             <div className='modal-header'>
+              <h2>ONLINESTORE</h2>
+              <sup>Receipt</sup>
+              <p>{!!user && user.email}</p>
+             </div>  
+             <div className='modal-body'>
+             <div className='table'>
+    <table>
+      <tr>
+        <th className='tr'>Product Name</th>
+        <th className='tr'>Quantity</th>
+        <th className='tr'>Final Price</th>
+      </tr>
+      {
+      !!orderItems && orderItems.map((ord) => {
+        return (
+        <tr>
+         <td className='tr'>{ord.name}</td>
+         <td className='tr'>
+          {!!isProd && isProd.map((prd) => {
+             if(prd.name !== ord.name){
+                return !prd;
+             }
+            const qty = parseInt(ord.amt.replace(/,/g,"")) / parseInt(prd.sprice);
+            return qty;
+          })}
+         </td>
+         <td className='tr'>{ord.amt}</td>
+        </tr>
+        );
+      })
+     }
+    </table>
+             </div>
+             <div className='prc-col'>
+    <div className='pr'>
+      <h5>Discount</h5>
+      <p>{!!isOrderData && isOrderData.discount}</p>
+    </div>
+    <hr/>
+    <div className='pr'>
+      <h4>Total Price</h4>
+      <p>{!!isOrderData && isOrderData.total}</p>
+    </div>
+             </div>
+             </div>      
+             <div className='modal-footer' id='fot'>
+             <button type='button' className='mod-btn' id='mod-btn-gry' onClick={handleCloseMod}>Back</button>
+             <button type='submit'  className='mod-btn' id='mod-btn-grn' onClick={handleDownload}>Download</button>
+             </div>
+            </div>
+       </div>
+
     <div className='col-dv-2'>
     <span style={{display: 'flex', justifyContent: 'space-between', margin: '10px'}}>
     <h4>Orders details</h4>
@@ -133,6 +244,7 @@ const AllOrders = () => {
                   </div>
                     <button id={prd.id} onClick={handleToggleEdit} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.PencilFill id={prd.id} onClick={handleToggleEdit} className='td-icn' title='edit' style={{ zIndex: '100'}}/></button>
                     <button id={prd.id} onClick={handleDelete} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.Trash3Fill id={prd.id} onClick={handleDelete} className='td-icn' style={{color: 'rgb(227, 15, 15)', zIndex: '100'}} title='delete' /></button>
+                    <button id={prd.id} onClick={handleReceipt} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.ReceiptCutoff id={prd.id} onClick={handleReceipt} className='td-icn' style={{color: 'rgb(15, 156, 227)', zIndex: '100'}} title='receipt' /></button>
                 </td>
             </tr>
         );

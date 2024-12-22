@@ -1449,6 +1449,27 @@ width: 100vw;
   position: absolute;
 }
 
+#log-out{
+  position: absolute;
+  top: 8%;
+  right: 1%;
+  background-color: #ececec;
+  z-index: 1000;
+  padding: 3px;
+  display: none;
+}
+
+.logout-links{
+  color: #ececec;
+  background-color: rgb(227, 15, 15);
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 @media  screen and (min-width : 769px) {
   .log-in > .login-icn {
     display: none;

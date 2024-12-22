@@ -9,7 +9,6 @@ import Axios from 'axios'
 const AllUsers = () => {
     const [allAddress, setAllAddress] = useState([])
     const [allCustomers, setAllCustomers] = useState([])
-    
 
     async function fetchCustomers() {
     /*

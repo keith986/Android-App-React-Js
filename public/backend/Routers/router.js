@@ -60,5 +60,28 @@ router_app.post('/dltuser', (req, res) => {
         })
     }
 })
+
+//change user phone number 
+router_app.post('/contacts', (req, res) => {
+    try{
+        Auth.updateUser(req.body.userid.toString(), {
+                phoneNumber: req.body.phonenumber
+             })
+             .then((result) => {
+                res.json({
+                    success: 'success'
+                })
+             })
+             .catch((errs) => {
+                res.json({
+                    error: errs.message
+                })
+             })
+    }catch(errr){
+        res.json({
+            error: errr.message
+        })
+    }
+})
  
 module.exports = router_app

@@ -184,7 +184,7 @@ const Cart = () => {
     var cur_day = days[day];
 
     var calendar = h + ':' + min + ':' + sec + session + ' ' + cur_day + ', ' + cur_date + '/' + month + '/' + year;
- 
+   
     const dta = [];
     var elem = document.getElementsByClassName('crt-name');
     var disc = document.getElementById('disoff').innerHTML;
@@ -207,6 +207,8 @@ const Cart = () => {
                      inovice : inv_oice,
                      method: isChecked.method.toString(),
                      calender : calendar,
+                     due_month : month,
+                     due_year: year,
                      progress: 'Pending',
                      createdAt: serverTimestamp()
                     })

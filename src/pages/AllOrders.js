@@ -214,6 +214,7 @@ const AllOrders = () => {
     <span style={{display: 'flex', justifyContent: 'space-between', margin: '10px'}}>
     <h4>Orders details</h4>
     </span>
+    <div className='table-respo'>
     <table className='table'>
       <tr>
           <th>#</th>
@@ -221,7 +222,7 @@ const AllOrders = () => {
           <th>CreatedAt</th>
           <th>Stage</th>
           <th>Action</th>
-      </tr>
+      </tr>  
       {!!isOrders && isOrders.map((prd, indx) => {
         return (
             <tr>
@@ -249,8 +250,8 @@ const AllOrders = () => {
             </tr>
         );
       })}
-    
     </table>
+    </div>
     </div>
 
     </div>

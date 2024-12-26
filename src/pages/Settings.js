@@ -8,6 +8,7 @@ import { UserContext } from '../context/UserContext'
 import { toast } from 'react-toastify'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import axios from 'axios'
 
 const Settings = () => {
     const {user} = useContext(UserContext)
@@ -99,7 +100,17 @@ const Settings = () => {
                              phonenumber: isPhoneNumber.toString()
                             })
                            .then(() => {
-                             toast.success('Phone number updated successfully')
+                             axios.post('/contacts', {userid: user.userid, phonenumber: isPhoneNumber.toString()})
+                                  .then((res) => {
+                                       if(res.data.success){
+                                        toast.success('Phone number updated successfully')
+                                       }else if(res.data.error){
+                                        toast.error(res.data.error)
+                                       }
+                                   })
+                                  .catch((err) => {
+                                    toast.error(err.message)
+                                   })       
                             })
                            .catch((error) => {
                              toast.error('Could not update phone number!')

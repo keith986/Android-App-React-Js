@@ -92,10 +92,10 @@ const AllUsers = () => {
       <table className='table'>
         <tr>
             <th>#</th>
-            <th>email</th>
-            <th>phone number</th>
-            <th>address</th>
-            <th>action</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Address</th>
+            <th>Action</th>
         </tr>
        {!!allCustomers
          ?
@@ -105,8 +105,8 @@ const AllUsers = () => {
             }
             const thee_data = !!allAddress && allAddress.map((adrs) => {
                 return (
-                    <tr>
-                    <td>{ind + 1}</td>
+                    <tr className='trs'>
+                    <td>{ind + 1}.</td>
                     <td>{customer.email}</td>
                     <td>{customer.phoneNumber}</td>
                     <td>{adrs.location},{adrs.city}</td>

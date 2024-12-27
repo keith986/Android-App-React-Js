@@ -91,6 +91,7 @@ const AdminDashboard = () => {
     let decttl = 0
 
     allOrders.forEach((ords) => {
+      if(ords.due_year.toString() === new Date().getFullYear().toString()){
       if(ords.due_month.toString() === '1'){
            jan.push(ords.total) 
       }else if(ords.due_month.toString() === '2'){
@@ -115,6 +116,7 @@ const AdminDashboard = () => {
            nov.push(ords.total)
       }else if(ords.due_month.toString() === '12'){
            dec.push(ords.total)
+      }
       }
     })
 
@@ -201,21 +203,21 @@ const AdminDashboard = () => {
   return (
     <div className='container-fluid' id='cont-fd'>
       <div className='rows'>
-         <div className='col-3'>
+         <div className='col-3' id='clr1'>
            <span>ALL USERS</span>
            <div className='alt'>
-           <h2>{!!allUsers && allUsers.length - 1}</h2>
+           <h2>{!!allUsers ? allUsers.length - 1 : '0'}</h2>
            <icons.PeopleFill className='alt-icn'/>  
            </div>
          </div>
-         <div className='col-3'>
+         <div className='col-3' id='clr2'>
            <span>ALL PRODUCTS</span>
            <div className='alt'>
            <h2>{!!allProducts && allProducts.length}</h2>
            <icons.Basket2 className='alt-icn'/>  
            </div>
          </div>
-         <div className='col-3'>
+         <div className='col-3' id='clr3'>
            <span>ALL ORDERS</span>
            <div className='alt'>
            <h2>{!!allOrders && allOrders.length}</h2>
@@ -224,10 +226,13 @@ const AdminDashboard = () => {
          </div>       
       </div>
       <br/>
-      <h3>Monthly sales</h3>
+      <div className='rows'>
+      <h3>{new Date().getFullYear()} Monthly sales</h3>
+      </div>
       <div className='rows'>
        <div className='col-33'>
-       <Bar data={{
+       <Bar
+          data={{
             labels: isXAxis,
             datasets: [{
               label: 'Monthly sales in Ksh',
@@ -249,8 +254,24 @@ const AdminDashboard = () => {
               borderWidth: 1
             }]
           }}
-          height={100}
-          
+
+          options= {{
+            scales : {
+              x : {
+                grid : {
+                  drawOnChartArea : false
+                }
+              },
+              y : {
+                beginAtZero : true,
+                grid : {
+                  drawOnChartArea : false
+                }
+              }
+            }
+          }}
+
+          height={100}      
         />
        </div>
       </div>

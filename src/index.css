@@ -900,45 +900,64 @@ overflow-x: hidden;
 }
 
 .sidenav{
-  background-color: #000;
+    background-color: rgb(7, 20, 55);
     color: #fff;
-    height: calc(100vh - 70px);
-    width: 190px;
+    height: calc(100vh - 100px);
+    width: 100px;
     overflow-y: auto;
     overflow-x: hidden;
     position: absolute;
-    left: 0;
+    left: 2%;
     bottom : 0;
+    top: 11.5%;
+    border-radius: 30px;
+    text-align: center;
 }
 
 .sidenav-container {
-  margin-top: 20px;
+  margin-top: 80px;
   text-align: center;
+  align-items: center;
 }
 
 .links {
   display: flex;
+  justify-content: center;
   text-align: center;
   align-items: center;
   color: #fff;
   text-decoration: none;
   width: 100%;
-  border-bottom: 1px solid gray;
+  /*border-bottom: 1px solid gray;*/
   padding-bottom: 10px;
   padding-top: 10px;
 }
 
 .links > span {
   margin-left: 30px;
+  display: none;
 }
 
 .links:hover {
   background: #ececec;
-  color: #000;
+  color: rgb(7, 20, 55);
+}
+
+.links[title]:hover::after {
+  content: attr(title);
+  font-size: 14px;
+  color: white;
+  background-color: rgb(7, 20, 55);
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  left: 0;
+  
 }
 
 .links-icn {
   margin-left: 10px;
+  font-size: 30px;
 }
 
 .links-nav {
@@ -963,6 +982,7 @@ overflow-x: hidden;
   width: 100%;
   margin-top: 10px;
   justify-content: space-between;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .col-3{
@@ -995,7 +1015,19 @@ overflow-x: hidden;
   align-items: center;
   text-align: center;
   box-shadow: 0px 0px 1px gray;
-  width: 100%;
+  width: 90%;
+  border-radius: 10px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.table > tr > td{
+  border-bottom: 1px solid gray;
+  opacity: 0.5;
+  font-size: 14px;
+}
+
+.table > tr > td:hover{
+  opacity:1;
 }
 
 .table-respo{
@@ -1006,6 +1038,8 @@ overflow-x: hidden;
 
 .table > tr > th {
   border: 1px solid #000;
+  border-radius: 10px;
+  font-size: 14px;
 }
 
 .td-icn {
@@ -1482,6 +1516,24 @@ width: 100vw;
 .col-33{
   width: 100%;
   max-height: 350px;
+}
+
+#clr1{
+  background-image: linear-gradient(to left, rgb(125, 147, 207),  rgba(255,0,0,1));
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #ececec;
+}
+
+#clr2{
+  background-image: linear-gradient(to right, rgb(125, 147, 207), rgba(255,0,0,1));
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #ececec;
+}
+
+#clr3{
+  background-image: linear-gradient(to right,  rgba(255,0,0,1), rgb(192, 128, 18));
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #ececec;
 }
 
 @media  screen and (min-width : 769px) {

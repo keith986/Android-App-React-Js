@@ -48,32 +48,26 @@ const AdminBar = () => {
         </div>
       </div>
       <div className='sidenav'>
+      <h4>Admin </h4>
         <div className='sidenav-container'>
-          <h4>Admin Panel</h4>
-          <Link to='/admin' className='links'>
-           <icons.ColumnsGap className='links-icn'/>
-           <span>Dashboard</span>
+          <Link to='/admin' className='links' title='Dashboard'>
+           <icons.HouseDoorFill className='links-icn'/>
           </Link>
-          <Link to='/allusers' className='links'>
+          <Link to='/allusers' className='links' title='Users'>
            <icons.Person className='links-icn'/>
-           <span>Users</span>
           </Link>
-          <Link to='/allcategories' className='links'>
+          <Link to='/allcategories' className='links' title='Categories'>
            <icons.Grid1x2Fill className='links-icn'/>
-           <span>Categories</span>
           </Link>
-          <Link to='/allproducts' className='links'>
+          <Link to='/allproducts' className='links' title='Products'>
            <icons.Cart3 className='links-icn'/>
-           <span>Products</span>
           </Link>
-          <Link to='/allorders' className='links'>
+          <Link to='/allorders' className='links' title='Orders'>
            <icons.ListUl className='links-icn'/>
-           <span>Orders</span>
           </Link>
           <div className='links-nav'>
           <Link className='links' id='links-out' onClick={handleAdminLogout}>
            <icons.BoxArrowInRight className='links-icn'/>
-           <span>Logout</span>
           </Link>
           </div>
         </div>

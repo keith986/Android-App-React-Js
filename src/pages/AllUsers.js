@@ -49,7 +49,7 @@ const AllUsers = () => {
     useEffect(() => {
         fetchCustomers();
         fetchAddress();
-    }, [])
+    }, [allCustomers])
 
     const handleDelete = async (e) => {
         try{
@@ -111,7 +111,7 @@ const AllUsers = () => {
                     <td>{customer.phoneNumber}</td>
                     <td>{adrs.location},{adrs.city}</td>
                     <td>
-                    <button id={customer.userid} onClick={handleDelete} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.Trash3Fill className='td-icn' style={{color: 'rgb(227, 15, 15)', zIndex: '100'}} title='delete' id={customer.userid} onClick={handleDelete}/></button>
+                    <button id={customer.uid} onClick={handleDelete} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.Trash3Fill className='td-icn' style={{color: 'rgb(227, 15, 15)', zIndex: '100'}} title='delete' id={customer.uid} onClick={handleDelete}/></button>
                     </td>
                     </tr>
                 );

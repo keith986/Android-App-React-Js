@@ -70,9 +70,12 @@ const AllProducts = () => {
            toast.error(ers.message)
           })
           console.log(!!data && data)
-        $('#myModal').animate({
+        $('#myModaless').animate({
          width: 'toggle'
         });
+        $('#my-bgs').animate({
+            width: 'toggle'
+        })
     }
 
     useEffect(() => {
@@ -119,6 +122,9 @@ const AllProducts = () => {
                                                                $('#myModales').animate({
                                                                  width: 'toggle'
                                                                });
+                                                               $('#my-bg').animate({
+                                                                width: 'toggle'
+                                                                })
                                                                toast.success('Added product successfully!')
                                                                $('.emls').val('');
                                                            })
@@ -185,9 +191,12 @@ const AllProducts = () => {
                                                             adminId: user.userid
                                                            })
                                                            .then((res) =>{
-                                                            $('#myModal').animate({
+                                                            $('#myModaless').animate({
                                                                 width: 'toggle'
                                                                });
+                                                               $('#my-bgs').animate({
+                                                                width: 'toggle'
+                                                                })
                                                                toast.success('Product updated successfully!')
                                                                $('.emls').val('');
                                                            })
@@ -230,12 +239,18 @@ const AllProducts = () => {
         $('#myModales').animate({
             width: 'toggle'
         });
+        $('#my-bg').animate({
+            width: 'toggle'
+        })
     }
 
     const handleToggleModal = () => {
-        $('#myModal').animate({
+        $('#myModaless').animate({
             width: 'toggle'
         });
+        $('#my-bgs').animate({
+            width: 'toggle'
+        })
     }
 
     const handleImage = () => {
@@ -268,7 +283,8 @@ const AllProducts = () => {
 
     return (
     <div className='container-fluid' id='cont-fd'>
-    
+     <div className='backdrop-background' onClick={handleToggleModales} id='my-bg'></div>  
+     <div className='backdrop-background' onClick={handleToggleModal} id='my-bgs'></div>   
     <div className='col-dv-2'>
     <span style={{display: 'flex', justifyContent: 'space-between', margin: '10px'}}>
     <h4>Products details</h4>
@@ -304,7 +320,7 @@ const AllProducts = () => {
     </table>
     </div>
  
-    <div className='modal' id='myModal'>
+    <div className='modal' id='myModaless'>
     <form onSubmit={handleChangeSubmit}>
     <div className='modal-content'>
           <div className='modal-header'>
@@ -315,29 +331,24 @@ const AllProducts = () => {
             <input type='text' value={!!data && data.id} id='prdid' hidden/>
           </div>  
           <div className='modal-body'>
-            <span>Product name</span>
             <div className='modal-nav'>
-             <input type='text' className='emls' placeholder='Product title' name='name' onChange={handleChange}/>
+             <input type='text' className='emsl' placeholder='Product name' name='name' onChange={handleChange}/>
             </div>
-            <span>Quantity</span>
             <div className='modal-nav'>
-             <input type='number' className='emls' name='quantity' placeholder='Number of items' onChange={handleChange}/>
+             <input type='number' className='emsl' name='quantity' placeholder='Quantity' onChange={handleChange}/>
             </div>
-            <span>Cost price</span>
             <div className='modal-nav'>
-             <input type='number' className='emls' name='cprice' placeholder='Enter your Buying price' onChange={handleChange}/>
+             <input type='number' className='emsl' name='cprice' placeholder='Enter your Buying price' onChange={handleChange}/>
             </div>
-            <span>Selling price</span>
             <div className='modal-nav'>
-             <input type='number' className='emls' name='sprice' placeholder='Set your selling price' onChange={handleChange}/>
+             <input type='number' className='emsl' name='sprice' placeholder='Set your selling price' onChange={handleChange}/>
             </div>
-            <span>Description</span>
             <div className='modal-nav'>
-             <textarea type='text' className='emls' name='description' placeholder='Tell us more about the product detail' onChange={handleChange}></textarea>
+             <textarea type='text' className='emsl' name='description' placeholder='Write a short description about the product' onChange={handleChange}></textarea>
             </div>
             <span>Is this a new product?</span>
             <div className='modal-nav'>
-            <select className='emls' name='new' onChange={handleChange}>
+            <select className='emsl' name='new' onChange={handleChange}>
             <option>select</option>
              <option value='Yes'>Yes</option>
              <option value='No'>No</option>
@@ -345,7 +356,7 @@ const AllProducts = () => {
             </div>
             <span>Select category</span>
             <div className='modal-nav'>
-            <select className='emls' name='cat' onChange={handleChange}>
+            <select className='emsl' name='cat' onChange={handleChange}>
              <option>select</option>
              {!!allCategories && allCategories.map(cate => {
                 return (
@@ -356,7 +367,7 @@ const AllProducts = () => {
             </div>
             <span>Is product on offer?</span>
             <div className='modal-nav'>
-            <select className='emls' name='offer' onChange={handleChange}>
+            <select className='emsl' name='offer' onChange={handleChange}>
              <option>select</option>
              <option value='Yes'>Yes</option>
              <option value='No'>No</option>
@@ -364,9 +375,9 @@ const AllProducts = () => {
             </div>
             <span>If yes, indicate the discount (%)</span>
             <div className='modal-nav'>
-             <input type='number' className='emls' name='discount' placeholder='e.g. 10, 20, ...' onChange={handleChange}/>
+             <input type='number' className='emsl' name='discount' placeholder='e.g. 10, 20, ...' onChange={handleChange}/>
             </div>
-            <span style={{margin: '20px'}}></span> 
+            <span style={{margin: '1px'}}></span> 
           </div>
           <div className='modal-footer'>
           <button type='button' className='mod-btn' id='mod-btn-gry' onClick={handleToggleModal}>Back</button>
@@ -380,43 +391,38 @@ const AllProducts = () => {
     <form onSubmit={handleAddSubmit}>
     <div className='modal-content'>
           <div className='modal-header'>
-            <h1>Add product</h1>
+            <h1>Add Product</h1>
             <img src={yeet} alt='alt_product' id='alt-img'/>
             <icons.PlusCircleDotted id='alt-edit' title='change image' onClick={handleImage} />
             <input type='file' accept='.jpg,.png,.jpeg' id='alt-file' hidden onChange={handleImageChange}/>
           </div>  
           <div className='modal-body'>
-            <span>Product name</span>
             <div className='modal-nav'>
-             <input type='text' className='emls' placeholder='Product title' name='name' onChange={handleAddChange}/>
+             <input type='text' className='emsl' placeholder='Product name e.i. Shoes' name='name' onChange={handleAddChange}/>
             </div>
-            <span>Quantity</span>
             <div className='modal-nav'>
-             <input type='number' className='emls' name='quantity' placeholder='Number of items' onChange={handleAddChange}/>
+             <input type='number' className='emsl' name='quantity' placeholder='Quantity e.i. 1, 10, 20' onChange={handleAddChange}/>
             </div>
-            <span>Cost price</span>
             <div className='modal-nav'>
-             <input type='number' className='emls' name='cprice' placeholder='Enter your Buying price' onChange={handleAddChange}/>
+             <input type='number' className='emsl' name='cprice' placeholder='Enter your Buying price' onChange={handleAddChange}/>
             </div>
-            <span>Selling price</span>
             <div className='modal-nav'>
-             <input type='number' className='emls' name='sprice' placeholder='Set your selling price' onChange={handleAddChange}/>
+             <input type='number' className='emsl' name='sprice' placeholder='Set your selling price' onChange={handleAddChange}/>
             </div>
-            <span>Description</span>
             <div className='modal-nav'>
-             <textarea type='text' className='emls' name='description' placeholder='Tell us more about the product detail' onChange={handleAddChange}></textarea>
+             <textarea type='text' className='emsl' name='description' placeholder='Wrie a short description about the product' onChange={handleAddChange}></textarea>
             </div>
             <span>Is this a new product?</span>
             <div className='modal-nav'>
-            <select className='emls' name='new' onChange={handleAddChange}>
+            <select className='emsl' name='new' onChange={handleAddChange}>
              <option></option>
              <option value='Yes'>Yes</option>
              <option value='No'>No</option>
             </select>
             </div>
-            <span>Select category</span>
+            <span>Select relevant category</span>
             <div className='modal-nav'>
-            <select className='emls' name='cat' onChange={handleAddChange}>
+            <select className='emsl' name='cat' onChange={handleAddChange}>
              <option></option>
              {!!allCategories && allCategories.map(cate => {
                 return (
@@ -427,17 +433,17 @@ const AllProducts = () => {
             </div>
             <span>Is product on offer?</span>
             <div className='modal-nav'>
-            <select className='emls' name='offer' onChange={handleAddChange}>
+            <select className='emsl' name='offer' onChange={handleAddChange}>
              <option></option>
              <option value='Yes'>Yes</option>
              <option value='No'>no</option>
             </select>
             </div>
-            <span>If yes, indicate the discount (%)</span>
+            <span>If yes, indicate your discount (%)</span>
             <div className='modal-nav'>
-             <input type='number' className='emls' name='discount' placeholder='e.g. 10, 20, ...' onChange={handleAddChange}/>
+             <input type='number' className='emsl' name='discount' placeholder='e.g. 10, 20, ...' onChange={handleAddChange}/>
             </div>
-            <span style={{margin: '20px'}}></span> 
+            <span style={{margin: '1px'}}></span> 
           </div>
           <div className='modal-footer'>
           <button type='button' className='mod-btn' id='mod-btn-gry' onClick={handleToggleModales}>Back</button>

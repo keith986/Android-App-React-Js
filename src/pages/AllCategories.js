@@ -42,6 +42,7 @@ const AllCategories = () => {
                         })
                         .then((res) => {
                             $('#myModales').animate({width: 'toggle'});
+                            $('#my-bg').animate({width: 'toggle'});
                             $('.emls').val();
                             toast.success('New category successfully added')
                          })
@@ -57,6 +58,9 @@ const AllCategories = () => {
         $('#myModales').animate({
             width: 'toggle'
         });
+        $('#my-bg').animate({
+            width: 'toggle'
+        })
     }
 
     const handleDelete = async (ev) => {
@@ -71,7 +75,7 @@ const AllCategories = () => {
 
     return (
     <div className='container-fluid' id='cont-fd'>
-   
+   <div className='backdrop-background' onClick={handleToggleModales} id='my-bg'></div>
     <div className='col-dv-2'>
     <span style={{display: 'flex', justifyContent: 'space-between', margin: '10px'}}>
     <h4>Product's Categories</h4>
@@ -96,7 +100,6 @@ const AllCategories = () => {
       })}   
     </table>
     </div>
- 
     <div className='modal' id='myModales'>
     <form onSubmit={handleAddSubmit}>
     <div className='modal-content'>
@@ -104,15 +107,15 @@ const AllCategories = () => {
             <h1>Add category</h1>
           </div>  
           <div className='modal-body'>
-            <span>Product name</span>
+            <span className='prd-nem'><icons.TagsFill/></span>
             <div className='modal-nav'>
-             <input type='text' className='emls' placeholder='Product title' name='name' onChange={handleAddChange}/>
+             <input type='text' className='emls' placeholder='Add New Category' name='name' onChange={handleAddChange}/>
             </div>
             <span style={{margin: '20px'}}></span> 
           </div>
           <div className='modal-footer'>
-          <button type='button' className='mod-btn' id='mod-btn-gry' onClick={handleToggleModales}>Back</button>
-          <button type='submit'  className='mod-btn' id='mod-btn-grn'>New Category</button>
+            <button type='button' className='mod-btn' id='mod-btn-gry' onClick={handleToggleModales}>Back</button>
+            <button type='submit'  className='mod-btn' id='mod-btn-grn'>New Category</button>
           </div>
     </div>
     </form>

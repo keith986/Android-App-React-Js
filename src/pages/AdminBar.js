@@ -26,10 +26,14 @@ const AdminBar = () => {
     $('#log-out').animate({
       width: 'toggle'
     })
+    $('#my-bges').animate({
+      show: 'toggle'
+    })
   }
 
   return (
     <div className='container'>
+    <div className='backdrop-backgrounds' onClick={handleTop} id='my-bges'></div>  
       <div className='nav'>
         <div className='nav-logo'>
           <h2>ONLINESTORE</h2>

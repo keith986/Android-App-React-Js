@@ -5,6 +5,7 @@ import { auth } from '../firebase'
 import { toast } from 'react-toastify'
 import { UserContext } from '../context/UserContext'
 import $ from 'jquery'
+import bars from '../images/bars.png'
 
 const AdminBar = () => {
   const navigate = useNavigate()
@@ -31,11 +32,22 @@ const AdminBar = () => {
     })
   }
 
+  const handleSideNav = () => {
+    $('#sideNav').animate({
+      width: 'toggle'
+    })
+    $('#my-bgses').animate({
+      show: 'toggle'
+    })
+  }
+
   return (
     <div className='container'>
     <div className='backdrop-backgrounds' onClick={handleTop} id='my-bges'></div>  
+    <div className='backdrop-backgrounds' onClick={handleSideNav} id='my-bgses'></div>  
       <div className='nav'>
         <div className='nav-logo'>
+          <img src={bars} className='nav-img' alt='img_navbar' onClick={handleSideNav}/>
           <h2>ONLINESTORE</h2>
         </div>
         <div className='nav-navbar'>
@@ -51,7 +63,7 @@ const AdminBar = () => {
           </div>
         </div>
       </div>
-      <div className='sidenav'>
+      <div className='sidenav' id='sideNav'>
       <h4>Admin </h4>
         <div className='sidenav-container'>
           <Link to='/admin' className='links' title='Dashboard'>

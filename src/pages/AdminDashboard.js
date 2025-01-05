@@ -202,7 +202,8 @@ const AdminDashboard = () => {
 
   return (
     <div className='container-fluid' id='cont-fd'>
-      <div className='rows'>
+    <div className='dash-brd'>
+      <div className='rows' id='ro-w'>
          <div className='col-3' id='clr1'>
            <span>ALL USERS</span>
            <div className='alt'>
@@ -226,10 +227,10 @@ const AdminDashboard = () => {
          </div>       
       </div>
       <br/>
-      <div className='rows'>
-      <h3>{new Date().getFullYear()} Monthly sales</h3>
+      <div className='rows' id='ro-w'>
+      <h3 className='m-s'>{new Date().getFullYear()} Monthly sales</h3>
       </div>
-      <div className='rows'>
+      <div className='rows' id='ro-w'>
        <div className='col-33'>
        <Bar
           data={{
@@ -271,10 +272,12 @@ const AdminDashboard = () => {
             }
           }}
 
-          height={100}      
+          height={100} 
+          className='bar-chart'     
         />
        </div>
       </div>
+    </div>
     </div>
   )
 }

@@ -81,7 +81,8 @@ const AllCategories = () => {
     <h4>Product's Categories</h4>
     <button type='button' id='add-user' onClick={handleToggleModales}>New Category</button>
     </span>
-    <table className='table'>
+    <div className='table-rs'>
+    <table className='table' id='tbl'>
       <tr>
           <th>#</th>
           <th>Name</th>
@@ -93,12 +94,13 @@ const AllCategories = () => {
                 <td>{indx + 1}.</td>
                 <td>{prd.name}</td>
                 <td>
-                 <button id={prd.id} onClick={handleDelete} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.Trash3Fill id={prd.id} onClick={handleDelete} className='td-icn' style={{color: 'rgb(227, 15, 15)', zIndex: '100'}} title='delete' /></button>
+                <input type='button' id={prd.id} onClick={handleDelete} value='Delete' style={{margin: '5px', cursor: 'pointer', zIndex: '16000', background: 'red', color: '#fff', border: 'none', padding: '10px', borderRadius: '5px'}}/>
                 </td>
             </tr>
         );
       })}   
     </table>
+    </div>
     </div>
     <div className='modal' id='myModales'>
     <form onSubmit={handleAddSubmit}>

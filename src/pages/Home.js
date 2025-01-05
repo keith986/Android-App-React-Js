@@ -10,7 +10,9 @@ const Home = () => {
     <>
      <Header/>
       <div className='screen'>
+      <div className='scn-dv'>
       <TopProducts/>
+      </div>
       <CategoriesAndOffers/> 
       <div className='col-row' >
         <h4>Most Popular Products</h4>

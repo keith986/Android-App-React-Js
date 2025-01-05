@@ -650,7 +650,7 @@ overflow-x: hidden;
   opacity: 0.7;
 }
 
-#pswd, #fon, #loc {
+#pswd, #fon, #loc{
   display: none;
 }
 
@@ -760,7 +760,7 @@ overflow-x: hidden;
   align-items: center;
 }
 
-#contry_code {
+#contry_code{
   padding: 10px;
   background-color: green;
   color: #fff;
@@ -1099,7 +1099,7 @@ overflow-x: hidden;
    display: none;
    font-family: Verdana, Geneva, Tahoma, sans-serif;
    color: #ececec;
- }
+}
 
 .modal-content {
   display: flex;
@@ -1620,7 +1620,25 @@ width: 100vw;
   color: #ececec;
 }
 
-@media  screen and (min-width : 769px) {
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+@media  screen and (min-width : 768px) {
   .log-in > .login-icn {
     display: none;
   }
@@ -1638,9 +1656,21 @@ width: 100vw;
   .screen {
     overflow: hidden;
   }
+  .nav-img{
+    display: none;
+  }
+  .footer-directory{
+    display: none;
+  }
 }
 
-@media  screen and (max-width: 768px) {
+@media screen and (max-width : 1039px){
+  .edit-bnt{
+    display: none;
+  }
+}
+
+@media  screen and (max-width: 767px) {
   .navbar{
     width: 100vw;
     padding: 0;
@@ -1667,11 +1697,6 @@ width: 100vw;
      bottom: 0;
      left: 0;
      right: 0;
-  }
-  .row{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
   }
   .submit {
     position: absolute;
@@ -1705,5 +1730,212 @@ width: 100vw;
   .open-modal{
     bottom: 0;
   }
+  .sidenav{
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    border-radius: 0;
+    display: none;
+    z-index: 24000;
+  }
+  .nav-img{
+    width: 40px;
+  }
+  #cont-fd{
+    margin-left: 0;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .dash-brd{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 20px;
+  }
+  #ro-w{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 92%;
+  }
+  .col-3{
+    width: 100%;
+  }
+  .m-s{
+    display: none;
+  }
+  .col-33{
+    display: none;
+  }
+  .table-rs{
+    max-width: 100%;
+    overflow: auto;
+    margin-top: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  #tbl{
+    width: 100%;
+  }
+  #tbl > tr > th {
+    border: none;
+    border-bottom: 1px solid #000;
+    border-radius: 0;
+  }
+  #myModales, #myModal, #myModaless{
+    z-index: 20000;
+  }
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+  #myModalsess, #myModalses, #myModalsses, #myModalssesss, #myModasles, #mysModales, #msyModales, #msysModales{
+    display: none;
+  }
 }
 
+@media screen and (min-width : 768px){
+  .screen{
+    margin-top: 0;
+  }
+  #header{
+    background-image: linear-gradient(rgb(7, 20, 55), rgb(125, 12, 120));
+    padding: 0;
+    margin-top: 0;
+  }
+  #us-cn{
+    font-size: 45px;
+    padding: 5px;
+  }
+  #us-cns{
+    align-items: center;
+    color: #000;
+    font-size: 25px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    margin-right: 20px;
+    cursor: pointer;
+  }
+  #us-cns:hover{
+    opacity: 0.5;
+  }
+  #myNavbar{
+    padding: 0;
+  }
+  .logo{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+    margin-left: 20px;
+  }
+  .searchbar{
+    display: none;
+  }
+  #myModales, #myModaless, #myModal{
+    z-index: 20000;
+    display: none;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+  }
+  #cart-scroll{
+    width: 100%;
+    border-radius: 5px;
+  }
+  .modal-total{
+    width: 100%;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+    border-radius: 0;
+    border-bottom: 1px solid gray;
+  }
+  #myModal{
+    background-image: linear-gradient(rgb(7, 20, 55), rgb(125, 12, 120));
+  }
+  .header-cart{
+    color:#ececec;
+  }
+  .modal-pay{
+    width: 100%;
+    border-radius: 5px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+  #cod-pay{
+    display: none;
+  }
+  #pdl{
+    background-image: linear-gradient(rgb(7, 20, 55), rgb(125, 12, 120));
+    border-radius: 10px;
+    padding: 10px;
+    color: #ececec;
+  }
+  .xlg-link:hover{
+    opacity: 0.6;
+  }
+  #myModalses, #myModalsess, #myModalsses, #myModalssesss, #myModasles, #mysModales, #msyModales, #msysModales{
+    /* height: calc(100vh - 70px);*/
+     width: 350px;
+     overflow-y: auto;
+     overflow-x: hidden;
+     position: fixed;
+     right: 0;
+     top: 0;
+     bottom : 0;
+     z-index: 24000;
+     box-shadow: 5px 5px 5px 5px gray;
+     background-image: linear-gradient(rgb(7, 20, 55), rgb(125, 12, 120));
+     display: none;
+     font-family: Verdana, Geneva, Tahoma, sans-serif;
+     color: #ececec;
+  }
+  .user-cols{
+    width: 100%;
+  }
+  .ords{
+    text-decoration: none;
+    color: #000;
+    background-color: #ececec;
+  }
+  #mod-hed{
+    background: #ececec;
+  }
+  #bod{
+    color: red;
+  }
+  #nobod{
+    color: #000;
+  }
+  #ord-list{
+    margin-top: 0;
+  }
+  .btn_ords, .btn_ord{
+    cursor: pointer;
+  }
+  .column{
+    margin-top: 0;
+  }
+  #cheks{
+    border-color: #ba8c63;
+  }
+  .table{
+    width: 100%;
+  }
+  .tr{
+    border-color: #ececec;
+    font-size: 16px;
+  }
+  .backdrop-background{
+    right: 0;
+  }
+  #locs{
+    background-color: #000;
+  }
+  .user-cols{
+    width: 100%;
+  }
+}

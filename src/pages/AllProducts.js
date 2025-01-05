@@ -290,7 +290,8 @@ const AllProducts = () => {
     <h4>Products details</h4>
     <button type='button' id='add-user' onClick={handleToggleModales}>Add products</button>
     </span>
-    <table className='table'>
+    <div className='table-rs'>
+    <table className='table' id='tbl'>
       <tr>
           <th>#</th>
           <th>Image</th>
@@ -310,14 +311,14 @@ const AllProducts = () => {
                 <td>{prd.cprice}</td>
                 <td>{prd.sprice}</td>
                 <td>
-                    <button id={prd.id} onClick={handleToggleEdit} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.PencilFill id={prd.id} onClick={handleToggleEdit} className='td-icn' title='edit' style={{ zIndex: '100'}}/></button>
-                    <button id={prd.id} onClick={handleDelete} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.Trash3Fill id={prd.id} onClick={handleDelete} className='td-icn' style={{color: 'rgb(227, 15, 15)', zIndex: '100'}} title='delete' /></button>
+                <input type='button' id={prd.id} onClick={handleToggleEdit} value='Edit' style={{margin: '5px', cursor: 'pointer', zIndex: '16000',  background: 'blue', color: '#fff', border: 'none', padding: '10px', borderRadius: '5px'}}/>
+                <input type='button' id={prd.id} onClick={handleDelete} value='Delete' style={{margin: '5px', cursor: 'pointer', zIndex: '16000', background: 'red', color: '#fff', border: 'none', padding: '10px', borderRadius: '5px'}}/>
                 </td>
             </tr>
         );
-      })}
-    
+      })}  
     </table>
+    </div>
     </div>
  
     <div className='modal' id='myModaless'>
@@ -415,7 +416,7 @@ const AllProducts = () => {
             <span>Is this a new product?</span>
             <div className='modal-nav'>
             <select className='emsl' name='new' onChange={handleAddChange}>
-             <option></option>
+             <option>select</option>
              <option value='Yes'>Yes</option>
              <option value='No'>No</option>
             </select>
@@ -423,7 +424,7 @@ const AllProducts = () => {
             <span>Select relevant category</span>
             <div className='modal-nav'>
             <select className='emsl' name='cat' onChange={handleAddChange}>
-             <option></option>
+             <option>select</option>
              {!!allCategories && allCategories.map(cate => {
                 return (
                     <option value={cate.name}>{cate.name}</option>
@@ -434,7 +435,7 @@ const AllProducts = () => {
             <span>Is product on offer?</span>
             <div className='modal-nav'>
             <select className='emsl' name='offer' onChange={handleAddChange}>
-             <option></option>
+             <option>select</option>
              <option value='Yes'>Yes</option>
              <option value='No'>no</option>
             </select>

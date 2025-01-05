@@ -39,7 +39,7 @@ function App() {
     <UserContextProvider> 
       <div className='screen'>
       <ToastContainer
-        position="top-right"
+        position="bottom-left"
           autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}
@@ -49,6 +49,7 @@ function App() {
           draggable
           pauseOnHover
           theme = "light"
+          style={{zIndex: '500000'}}
       />
       <ToastContainer />
 
@@ -88,7 +89,6 @@ function App() {
       <FooterDirectory>
       <Footer/>
       </FooterDirectory>
-
     </UserContextProvider>
   );
 }

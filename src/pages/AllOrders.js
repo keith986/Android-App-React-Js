@@ -1,7 +1,6 @@
 import { collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore'
 import React, {  useContext, useEffect, useState } from 'react'
 import { db } from '../firebase'
-import * as icons from 'react-bootstrap-icons'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import $ from 'jquery'
@@ -116,18 +115,33 @@ const AllOrders = () => {
     const handleReceipt = async(ev) => {
         await getDoc(doc(db, 'orders', ev.target.id))
                     .then((resp) => {
-                        $('#myModal').animate({
+                        $('#myModales').animate({
                             width: 'toggle'
                         })
                         setIsOrderData(resp.data())
                         setOrderItems(resp.data().order)
                     })
                     .catch((err) => toast.error(err.message))
+        $('#my-bgsess').animate({
+            width : 'toggle'
+        })
+    }
+
+    const handleReceiptMod = () => {
+        $('#my-bgsess').animate({
+            width : 'toggle'
+        })
+        $('#myModales').animate({
+            width: 'toggle'
+        })
     }
 
     const handleCloseMod = () => {
-        $('#myModal').animate({
+        $('#myModales').animate({
             width: 'toggle'
+        })
+        $('#my-bgsess').animate({
+            width : 'toggle'
         })
     }
 
@@ -147,15 +161,18 @@ const AllOrders = () => {
         setTimeout(() => {
           $('#fot').show();
         }, 500)
-        $('#myModal').animate({
+        $('#myModales').animate({
             width: 'toggle'
+        })
+        $('#my-bgsess').animate({
+            width : 'toggle'
         })
     }
 
     return (
     <div className='container-fluid' id='cont-fd'>
-    
-       <div className='modal' id='myModal'> 
+        <div className='backdrop-background' onClick={handleReceiptMod} id='my-bgsess'></div>
+        <div className='modal' id='myModales'> 
             <div className='modal-content' id='receipt'> 
              <div className='modal-header'>
               <h2>ONLINESTORE</h2>
@@ -208,14 +225,13 @@ const AllOrders = () => {
              <button type='submit'  className='mod-btn' id='mod-btn-grn' onClick={handleDownload}>Download</button>
              </div>
             </div>
-       </div>
-
+        </div>
     <div className='col-dv-2'>
     <span style={{display: 'flex', justifyContent: 'space-between', margin: '10px'}}>
     <h4>Orders details</h4>
     </span>
-    <div className='table-respo'>
-    <table className='table'>
+    <div className='table-rs'>
+    <table className='table' id='tbl'>
       <tr>
           <th>#</th>
           <th>Invoice No.</th>
@@ -243,17 +259,16 @@ const AllOrders = () => {
                     <Link className='Link' id={prd.id} onClick={handleUpdateDelivered}>Delivered</Link>
                     <Link id={prd.id} className='Links' onClick={handleEditClose}>Close</Link>
                   </div>
-                    <button id={prd.id} onClick={handleToggleEdit} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.PencilFill id={prd.id} onClick={handleToggleEdit} className='td-icn' title='edit' style={{ zIndex: '100'}}/></button>
-                    <button id={prd.id} onClick={handleDelete} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.Trash3Fill id={prd.id} onClick={handleDelete} className='td-icn' style={{color: 'rgb(227, 15, 15)', zIndex: '100'}} title='delete' /></button>
-                    <button id={prd.id} onClick={handleReceipt} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.ReceiptCutoff id={prd.id} onClick={handleReceipt} className='td-icn' style={{color: 'rgb(15, 156, 227)', zIndex: '100'}} title='receipt' /></button>
-                </td>
+                  <input type='button' id={prd.id} onClick={handleToggleEdit} className='edit-bnt' value='Edit' style={{margin: '5px', cursor: 'pointer', zIndex: '16000',  background: 'blue', color: '#fff', border: 'none', padding: '10px', borderRadius: '5px'}}/>
+                  <input type='button' id={prd.id} onClick={handleDelete} value='Delete' style={{margin: '5px', cursor: 'pointer', zIndex: '16000', background: 'red', color: '#fff', border: 'none', padding: '10px', borderRadius: '5px'}}/>
+                  <input type='button' id={prd.id} onClick={handleReceipt} value='Receipt' style={{margin: '5px', cursor: 'pointer', zIndex: '16000',  background: 'purple', color: '#fff', border: 'none', padding: '10px', borderRadius: '5px'}}/>
+               </td>
             </tr>
         );
       })}
     </table>
     </div>
     </div>
-
     </div>
   )
 }

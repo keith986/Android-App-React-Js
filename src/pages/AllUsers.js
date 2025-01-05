@@ -1,7 +1,6 @@
 import { collection, deleteDoc, doc, onSnapshot} from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { db } from '../firebase'
-import * as icons from 'react-bootstrap-icons'
 import $ from 'jquery'
 import { toast } from 'react-toastify'
 import Axios from 'axios'
@@ -89,7 +88,8 @@ const AllUsers = () => {
     <div className='container-fluid' id='cont-fd'>
       <div className='col-dv-2'>
       <h4>Users informations</h4>
-      <table className='table'>
+      <div className='table-rs'>
+      <table className='table' id='tbl'>
         <tr>
             <th>#</th>
             <th>Email</th>
@@ -106,12 +106,12 @@ const AllUsers = () => {
             const thee_data = !!allAddress && allAddress.map((adrs) => {
                 return (
                     <tr className='trs'>
-                    <td>{ind + 1}.</td>
+                    <td>#</td>
                     <td>{customer.email}</td>
                     <td>{customer.phoneNumber}</td>
                     <td>{adrs.location},{adrs.city}</td>
                     <td>
-                    <button id={customer.uid} onClick={handleDelete} style={{margin: '5px', cursor: 'pointer', zIndex: '16000'}}><icons.Trash3Fill className='td-icn' style={{color: 'rgb(227, 15, 15)', zIndex: '100'}} title='delete' id={customer.uid} onClick={handleDelete}/></button>
+                    <input type='button' id={customer.uid} onClick={handleDelete} value='Delete' style={{margin: '5px', cursor: 'pointer', zIndex: '16000', background: 'red', color: '#fff', border: 'none', padding: '10px', borderRadius: '5px'}}/>
                     </td>
                     </tr>
                 );
@@ -124,6 +124,7 @@ const AllUsers = () => {
          :
           'Nothing added yet'} 
       </table>
+      </div>
       </div>
     </div>
   )

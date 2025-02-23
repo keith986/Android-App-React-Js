@@ -29,6 +29,8 @@ import AllUsers from './pages/AllUsers.js';
 import AllProducts from './pages/AllProducts.js';
 import AllCategories from './pages/AllCategories.js';
 import AllOrders from './pages/AllOrders.js';
+import CategoryDirectedPage from './pages/CategoryDirectedPage.js'
+import DirectedPage from './pages/DirectedPage';
 
 //connect to backend
 Axios.defaults.baseURL = 'http://localhost:7000/';
@@ -39,7 +41,7 @@ function App() {
     <UserContextProvider> 
       <div className='screen'>
       <ToastContainer
-        position="bottom-left"
+        position="top-right"
           autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}
@@ -49,7 +51,7 @@ function App() {
           draggable
           pauseOnHover
           theme = "light"
-          style={{zIndex: '500000'}}
+          style={{zIndex: '50000'}}
       />
       <ToastContainer />
 
@@ -83,12 +85,16 @@ function App() {
         <Route element={<Suggestions/>} path='/suggestions'/>
         <Route element={<Notifications/>} path='/notifications'/>
         <Route element={<Settings/>} path='/settings'/>
-      </Routes>
-      <div className='col-row'><span style={{marginTop: '50px', marginBottom: '20px'}}></span></div>
-      </div>
+        <Route element={<CategoryDirectedPage/>} path='/search'/>
+        <Route element={<DirectedPage/>} path='/category/list'/>
+      </Routes>  
+
       <FooterDirectory>
-      <Footer/>
+       <Footer/>
       </FooterDirectory>
+      </div> 
+   
+      
     </UserContextProvider>
   );
 }

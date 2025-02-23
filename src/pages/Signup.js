@@ -72,7 +72,7 @@ const Signup = () => {
                            toast.error('Server response error!')
                        })   
             })
-            .catch((errs) => {
+             .catch((errs) => {
               toast.error('Internal Server!')
             })
      
@@ -125,8 +125,7 @@ const Signup = () => {
                                 })
                                .catch((ers) => {
                                 toast.error('Internal server error!')
-                                })
-                             
+                                })     
                            })
                           .catch((error) => {
                             toast.error('Internal server error!')

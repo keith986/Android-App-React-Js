@@ -1455,7 +1455,11 @@ const submitPhoneNumber = async (event) => {
 
     <nav className='navbar' id='myNavbar'>
        <div className='navbar-logo'>
-        <h2 className='logo'>ONLINESTORE</h2>
+        <h2 className='logo'>
+        <Link to='/dashboard' style={{color: '#fff', textDecoration: 'none'}}>
+        ONLINESTORE
+        </Link>
+        </h2>
        </div>
        <div className='searchbar'>
         <input type='search' className='search' placeholder='Search ...' onClick={handleChange}/>

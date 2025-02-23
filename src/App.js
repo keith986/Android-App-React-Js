@@ -31,6 +31,11 @@ import AllCategories from './pages/AllCategories.js';
 import AllOrders from './pages/AllOrders.js';
 import CategoryDirectedPage from './pages/CategoryDirectedPage.js'
 import DirectedPage from './pages/DirectedPage';
+import DirectedProduct from './pages/DirectedProduct';
+import AboutPage from './pages/AboutPage.js';
+import ContactUsPage from './pages/ContactUsPage.js';
+import FAQSPage from './pages/FAQSPage.js';
+import TermsAndConditions from './pages/TermsAndCondtions.js';
 
 //connect to backend
 Axios.defaults.baseURL = 'http://localhost:7000/';
@@ -40,8 +45,8 @@ function App() {
   return (
     <UserContextProvider> 
       <div className='screen'>
-      <ToastContainer
-        position="top-right"
+      <ToastContainer 
+        position="top-left"
           autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}
@@ -51,7 +56,7 @@ function App() {
           draggable
           pauseOnHover
           theme = "light"
-          style={{zIndex: '50000'}}
+          zIndex ='500000'
       />
       <ToastContainer />
 
@@ -87,6 +92,11 @@ function App() {
         <Route element={<Settings/>} path='/settings'/>
         <Route element={<CategoryDirectedPage/>} path='/search'/>
         <Route element={<DirectedPage/>} path='/category/list'/>
+        <Route element={<DirectedProduct/>} path='/product/'/>
+        <Route element={<AboutPage/>} path='/about'/>
+        <Route element={<ContactUsPage/>} path="/support"/>
+        <Route element={<FAQSPage/>} path="/FAQs"/>
+        <Route element={<TermsAndConditions/>} path="/terms-and-conditions"/>
       </Routes>  
 
       <FooterDirectory>

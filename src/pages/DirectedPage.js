@@ -13,6 +13,7 @@ import * as icons from 'react-bootstrap-icons'
 import $ from 'jquery'
 import back_ground from '../images/back_ground.png'
 import Loading_icon from '../images/Loading_icon.gif'
+import AnotherFooter from './AnotherFooter';
 
 const DirectedPage = () => {
   const[isCat, setIsCat] = useState([])
@@ -97,12 +98,6 @@ const DirectedPage = () => {
                     .catch((err) => {
                       toast.error('Could not add to cart!')
                     })
-  }
-
-  const currentYear = () => {
-    const da_te = new Date()
-    const curr_yr = da_te.getFullYear();
-    return curr_yr;
   }
 
   const fetchCategories = async () => {
@@ -208,7 +203,7 @@ async function handleLink(e) {
          })}
        </div>
 
-       <Link to='' style={{color:'red', display: 'flex', justifyContent: 'center'}}>&copy; Copyright {currentYear()}</Link>
+       <AnotherFooter/>
 
        <div id='marg'></div>
       </div>

@@ -1,0 +1,75 @@
+.contact-page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    margin: 0 auto;
+    color: #333;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 1200px;
+    align-items: center;
+    text-align: center;
+    padding-top: 0;
+    margin-top: 0;
+  }
+  
+  .contact-page h1 {
+    font-size: 2.5rem;
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .contact-page p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .contact-page h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+  }
+  
+  .contact-page a {
+    text-decoration: none;
+    color: #007bff;
+    transition: color 0.3s ease;
+  }
+  
+  .contact-page a:hover {
+    color: #0056b3;
+  }
+  
+  .contact-page ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .contact-page ul li {
+    margin-bottom: 10px;
+  }
+  
+  .contact-page ul li a {
+    font-size: 1rem;
+    color: #007bff;
+  }
+  
+  .contact-page ul li a:hover {
+    color: #0056b3;
+  }
+  
+  .contact-page .whatsapp-link {
+    color: #25D366;
+    font-weight: bold;
+  }
+  
+  .contact-page .whatsapp-link:hover {
+    color: #1c9c57;
+  }

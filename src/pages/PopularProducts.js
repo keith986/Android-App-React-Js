@@ -8,6 +8,7 @@ import * as icons from 'react-bootstrap-icons'
 import {UserContext} from '../context/UserContext'
 
 const PopularProducts = () => {
+  
   const {user} = useContext(UserContext)
   const [popularPrdt, setPopularPrdt] = useState([])
   const [isModal, setIsModal] = useState(false)

@@ -47,7 +47,7 @@ const AdminBar = () => {
     <div className='backdrop-backgrounds' onClick={handleSideNav} id='my-bgses'></div>  
       <div className='nav'>
         <div className='nav-logo'>
-          <img src={bars} className='nav-img' alt='img_navbar' onClick={handleSideNav}/>
+          <img src={bars} className='nav-img' alt='img_navbar' onClick={handleSideNav} id='nav-log'/>
           <h2>ONLINESTORE</h2>
         </div>
         <div className='nav-navbar'>

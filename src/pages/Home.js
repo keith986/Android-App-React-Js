@@ -11,18 +11,21 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import { addDoc, collection, doc, getDoc, limit, onSnapshot, orderBy, query } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, limit, onSnapshot, orderBy, query, setDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import SearchBar from './SearchBar'
 import { toast } from 'react-toastify'
 import { UserContext } from '../context/UserContext'
-import $ from 'jquery'
-import { Link } from 'react-router-dom'
+//import $ from 'jquery'
+import * as Icon from 'react-bootstrap-icons'
+import AnotherFooter from './AnotherFooter'
+import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
   const {user} = useContext(UserContext)
   const [newPrdt, setNewPrdt] = useState([])
   const [popularPrdt, setPopularPrdt] = useState([])
+  const location = useNavigate();
 
   async function fetchNewProducts () {
       const colRef = collection(db, "products")
@@ -78,24 +81,46 @@ const Home = () => {
                     })
   }
 
-  const viewMore = async (e) => {
-    $('#myes-bsg').animate({
-      width: 'toggle'
-    })   
+  const viewMore = async (ev) => {
+         await setDoc(doc(db, "productlink", user.userid), {
+                                       userid : user.userid,
+                                       prdid : ev.target.id
+                                         })
+                                        .then((docRef) => {
+                                           location('/product/')
+                                         })
+                                        .catch((ers) => {
+                                         toast.error('Internal server error!')
+                                         })
   }
 
-  const currentYear = () => {
-    const da_te = new Date()
-    const curr_yr = da_te.getFullYear();
-    return curr_yr;
+  const wishList = async (ev) => {
+    const colRef = doc(db, "products", ev.target.id);
+    const docSnap = await getDoc(colRef)
+    const docData = [];
+
+    if(docSnap.exists()){
+      docData.push({...docSnap.data()})
+    }
+
+    await addDoc(collection(db, 'wishlist'), {
+                userId : !!user && user.userid,
+                product_name: docSnap.data().name,
+                prod_imeg : docSnap.data().imeg,
+                prod_Id: ev.target.id
+                })
+    .then((res) => {
+      toast.success('added to wish List')
+    })
+    .catch((err) => {
+      toast.error('Could not add to wish list!')
+    })
   }
 
   return (
     <div className='entr'>
-     <Header/>
-     <SearchBar/>
-      <div className='backdrop-background' onClick={viewMore} id='myes-bsg'></div>
-     
+      <Header/>
+      <SearchBar/> 
       <div className='screen' id='scr'>  
       <div className='swiper-cont'>
       <Swiper
@@ -123,6 +148,7 @@ const Home = () => {
                 <div className='swiper1'>
                 <h4>{dt.name}</h4>
                 <p className='descr-swi'>{dt.description}</p>
+                <Icon.Heart className='fav' id={dt.id} onClick={wishList}/>
                 <button className='add-to-carts' id={dt.id} onClick={viewMore}>Read more</button>
                 <button className='add-to-cart' id={dt.id} onClick={addToCart}>Add to Cart</button>
                 </div>
@@ -138,7 +164,7 @@ const Home = () => {
             :
             <img src={Loading_icon} className='img' alt='Loading_icon'/>
             }
-      </div>
+     </div>
       </Swiper>
       </div>
       <div className='scn-dv'>
@@ -163,6 +189,7 @@ const Home = () => {
             <div className='prdt-div'>
               <img src={prdt.imeg} className='img' alt='_img'/>
               <span>{prdt.name}</span>
+              <Icon.Heart className='fav' id={prdt.id} onClick={wishList}/>
               <p style={{fontSize: '12px'}}>{sPrc.toLocaleString()} KES</p>
               <button className='add-to-cart' id={prdt.id} onClick={addToCart}>Add to Cart</button>
             </div>
@@ -177,13 +204,14 @@ const Home = () => {
             <div className='prdt-div'>
               <img src={prdt.imeg} className='img' alt='_img'/>
               <span>{prdt.name}</span>
+              <Icon.Heart className='fav' id={prdt.id} onClick={wishList}/>
               <p style={{fontSize: '12px'}}>{sPrc.toLocaleString()} KES</p>
               <button className='add-to-cart' id={prdt.id} onClick={addToCart}>Add to Cart</button>
             </div>
           );
          })}
        </div>
-       <Link to='' style={{color:'red', display: 'flex', justifyContent: 'center'}}>&copy; Copyright {currentYear()}</Link>
+       <AnotherFooter/>
        <div id='marg'></div>
       </div>
     </div>

@@ -17,6 +17,7 @@ const Cart = () => {
       method : '',
       reference: ''
     })
+    const [isCoupons, setIsCoupons] = useState([])
 
     const handleClick = async () => {
         $('.container-row').animate({
@@ -196,7 +197,39 @@ const Cart = () => {
     }  
 
     const inv_oice = Math.floor(Math.random() * '0123456789');
- 
+    //ADDING COUPONS
+   var copun = parseFloat(ttl.replace(/,/g, ''));
+     if(copun >= 1000){
+     //coupon
+       await addDoc(collection(db, 'coupons'), {
+         coupon: 20,
+         userid: !!user && user.userid,
+         due_month : month,
+         due_year: year,
+        isActivated: "not activated"
+       })
+       .then((res) => {
+         console.log('Coupon added')
+       })
+       .catch((err) => {
+         console.log("Coupon not Added..." + err.message)
+       })
+     }else{
+       await addDoc(collection(db, 'coupons'), {
+         coupon: 5,
+         userid: !!user && user.userid,
+         due_month : month,
+         due_year: year,
+        isActivated: "not activated"
+       })
+       .then((res) => {
+         console.log('Coupon added')
+       })
+       .catch((err) => {
+         console.log("Coupon not Added..." + err.message)
+       })
+     }
+     
     if(isChecked.method.toString() !== ''){
       if(isChecked.method.toString() === 'cash'){
         await addDoc(collection(db, 'orders'),{
@@ -252,7 +285,48 @@ const Cart = () => {
       toast.info('Select payment method')
     }
 
+    //REMOVING COUPONS
+     isCoupons.forEach(async (coup) => {
+          if(coup.isActivated === 'activated' && coup.userid === user.userid){
+            await deleteDoc(doc(db, 'coupons', coup.id))
+            .then((res) => {
+              toast.success("Your coupons were used successfully")
+            })
+            .catch((errs) => { toast.error("Your activated coupons were not used.") })
+          }
+        })
+
   }
+
+     async function fetchCoupons () {
+          const colRef = collection(db, "coupons")
+          onSnapshot(colRef, (snapshot) => {
+            let coupons = [];
+            snapshot.docs.forEach((snaps) => {
+              coupons.push({...snaps.data(), id: snaps.id})
+            })
+            setIsCoupons(coupons);
+          })
+     }
+      
+      useEffect(() => {
+        fetchCoupons()
+      }, [])
+  
+    useEffect(() => {
+      if(isCoupons.length > 0){
+        const ttlcpn = [];
+        isCoupons.forEach((coup => {
+          if(coup.isActivated === 'activated' && user.userid === coup.userid){
+               ttlcpn.push(coup.coupon)
+          }else{
+            ttlcpn.push(0)
+          }
+        }))
+        const sum = ttlcpn.reduce((a, b) => a + b, 0);
+        $("#disoff").text(sum.toLocaleString())
+      }
+    }, [isCoupons, user])
  
   return (
   <div id='cart'>

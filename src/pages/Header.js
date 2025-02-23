@@ -19,40 +19,41 @@ const Header = () => {
   const {user} = useContext(UserContext)
   const [isCartID, setIsCartID] = useState([]) 
   const [isChecked, setIsChecked] = useState({
-        method : '',
-        reference: ''
+        method : ''
   })
-  const navigate = useNavigate()
+    const navigate = useNavigate()
     const [isOrders, setIsOrders] = useState([])
     const [isOrderData, setIsOrderData] = useState({})
     const [orderItem, setOrderItem] = useState([])
     const [isProd, setIsProd] = useState([])
     const [selectedOrd, setSelectedOrd] = useState('active')
-  const [isAddress, setIsAddress] = useState({
+    const [isAddress, setIsAddress] = useState({
         city: '',
         location: ''
-  })
-  const [isPhoneNumber, setIsPhoneNumber] = useState([])
-  const [userAddress, setUserAddress] = useState([])
-  const [isQry, setIsQry] = useState({
+    })
+    const [isPhoneNumber, setIsPhoneNumber] = useState([])
+    const [userAddress, setUserAddress] = useState([])
+    const [isQry, setIsQry] = useState({
       qryone : '',
       qrytwo : '',
       qrythree : '',
       qryfour : '',
       qryfive : '',
       otherqry : ''
-  })
-  const [isSuggestion, setIsSuggestion] = useState({
+    })
+    const [isSuggestion, setIsSuggestion] = useState({
         prblmone : '',
         prblmtwo : '',
         prblmthree : '',
         prblmfour : '',
         others : ''
-  })
-  
-  const handleChangess = (e) => {
+    })
+    const [isWishData, setIsWishData] = useState([])
+    const [isCoupons, setIsCoupons] = useState([])
+
+    const handleChangess = (e) => {
         setIsSuggestion({...isSuggestion, [e.target.name]:[e.target.value] })
-  }
+    }
   
   const handlePhone = async () => {
     $('#fon').animate({
@@ -291,8 +292,11 @@ const submitPhoneNumber = async (event) => {
   
       }else{
         toast.info('No selection made')
+        
+        $('#qryerr-id').html('No selection made!')
+        
       }
-    } 
+  } 
 
   const handleCloseModal = () => {
     setIsModal(false) 
@@ -381,7 +385,7 @@ const submitPhoneNumber = async (event) => {
    const handleDelete = async (ev) => {
         await deleteDoc(doc(db, 'cart', ev.target.id))
                        .then((res) => {
-                         console.log('done')
+                         console.log('deleted')
                        })
                        .catch((err) => {
                         toast.error(err.message)
@@ -435,13 +439,6 @@ const submitPhoneNumber = async (event) => {
   
      }
 
-     const handleLipa = () => {
-      $('#payd').animate({
-          height: 'toggle',
-          show : 'toggle'
-      })
-     }
-
   const handleChecked = (e) => {
     setIsChecked({...isChecked, [e.target.name]: [e.target.value]})
   }
@@ -491,7 +488,6 @@ const submitPhoneNumber = async (event) => {
   
   }, [isCartID])
 
-  //check here
   const handleOrder = async() => {
     var date = new Date();
     //calendar
@@ -513,7 +509,9 @@ const submitPhoneNumber = async (event) => {
     if(sec < 10){
       sec = '0' + sec;
     }
+
     //day of the week
+    
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     var day = date.getDay();
     var cur_day = days[day];
@@ -531,6 +529,38 @@ const submitPhoneNumber = async (event) => {
     }  
 
     const inv_oice = Math.floor(Math.random() * '0123456789');
+
+    var copun = parseFloat(ttl.replace(/,/g, ''));
+    if(copun >= 1000){
+    //coupon
+      await addDoc(collection(db, 'coupons'), {
+        coupon: 20,
+        userid: !!user && user.userid,
+        due_month : month,
+        due_year: year,
+        isActivated: "not activated"
+      })
+      .then((res) => {
+        console.log('Coupon added')
+      })
+      .catch((err) => {
+        console.log("Coupon not Added..." + err.message)
+      })
+    }else{
+      await addDoc(collection(db, 'coupons'), {
+        coupon: 5,
+        userid: !!user && user.userid,
+        due_month : month,
+        due_year: year,
+        isActivated: "not activated"
+      })
+      .then((res) => {
+        console.log('Coupon added')
+      })
+      .catch((err) => {
+        console.log("Coupon not Added..." + err.message)
+      })
+    }
  
     if(isChecked.method.toString() !== ''){
       if(isChecked.method.toString() === 'cash'){
@@ -595,6 +625,17 @@ const submitPhoneNumber = async (event) => {
     }else{
       toast.info('Select payment method')
     }
+
+    //delete all activate coupons
+    isCoupons.forEach(async (coup) => {
+      if(coup.isActivated === 'activated' && coup.userid === user.userid){
+        await deleteDoc(doc(db, 'coupons', coup.id))
+        .then((res) => {
+          toast.success("Your coupons were used successfully")
+        })
+        .catch((errs) => { toast.error("Your activated coupons were not used.") })
+      }
+    })
 
   }
 
@@ -759,6 +800,7 @@ const submitPhoneNumber = async (event) => {
       
       }else{
         toast.info('No suggestion selected!')
+        $('#err-id').html('No suggestion selected!')
       }
   }
 
@@ -775,7 +817,86 @@ const submitPhoneNumber = async (event) => {
     $('#sssmsssyss-sbsgs').animate({
      width: 'toggle'
     })
- }
+  }
+
+  async function fetchWishData(){
+    const colRef = collection(db, 'wishlist')
+    await onSnapshot(colRef, (snapshot) => {
+      let prod_D = [];
+  
+      snapshot.docs.forEach((doces) => {
+        prod_D.push({...doces.data(), id: doces.id}); 
+      })
+      
+      setIsWishData(prod_D);   
+    })
+  }
+
+  useEffect(() => {
+    fetchWishData();
+  }, []) 
+
+  useEffect(() => {
+    if(isWishData.length > 0){
+      $('#pdls').text(isWishData.length)
+      }else{
+        $('#pdls').text('0')
+      }
+  }, [isWishData])
+
+   const removeFromWishList = async (ev) => {
+    await deleteDoc(doc(db, 'wishlist', ev.target.id))
+                    .then((res) => {
+                      toast.success('Removed from Wish List')
+                    })
+                    .catch((erros) => {
+                      toast.error('Could notb delete from Wish List')
+                    })
+  }
+
+   async function fetchCoupons () {
+        const colRef = collection(db, "coupons")
+        onSnapshot(colRef, (snapshot) => {
+          let coupons = [];
+          snapshot.docs.forEach((snaps) => {
+            coupons.push({...snaps.data(), id: snaps.id})
+          })
+          setIsCoupons(coupons);
+        })
+   }
+    
+    useEffect(() => {
+      fetchCoupons()
+    }, [])
+
+  async function activateCoupon (e) {
+    const colRef = doc(db, "coupons", e.target.id);
+    await updateDoc(colRef, {
+      isActivated: 'activated'
+    })
+    .then((res) => {
+      toast.success("Activated coupon successfully")
+    })
+    .catch((err) => {
+      toast.error("Could not activate coupon")
+    })
+  }
+
+  useEffect(() => {
+    if(isCoupons.length > 0){
+      const ttlcpn = [];
+      isCoupons.forEach((coup => {
+        if(coup.isActivated === 'activated' && user.userid === coup.userid){
+             ttlcpn.push(coup.coupon)
+        }else{
+          ttlcpn.push(0)
+        }
+      }))
+      const sum = ttlcpn.reduce((a, b) => a + b, 0);
+      $("#disoff").text(sum.toLocaleString())
+    }
+  }, [isCoupons, user])
+
 
   return (
     <div className='container-fluid' id='header'>
@@ -795,12 +916,33 @@ const submitPhoneNumber = async (event) => {
       <div className='modal-dialog'>
         <div className='modal-content'>
           <div className='modal-header'>
-            <h2>MY WISH LIST</h2>
+            <h2><span id='pdls'></span> MY WISH LIST</h2>
           </div>
           <div className='modal-body'>
-            MY WISH LIST
+          <div className='container-row' id='cart-scroll'>
+                 {!!isWishData && isWishData.length > 0 
+                 ? 
+                 !!isWishData && isWishData.map((wsh) => {
+
+                  return (
+                    <div className='wish-row'>
+                     <div>
+                     <img src={!!wsh.prod_imeg ? wsh.prod_imeg : 'Nothing'} className='cart_img' alt='img_src'/>
+                     </div>
+                     <div>
+                      <h5>{wsh.product_name}</h5>
+                      <button className='add-to-crt' id={wsh.prod_Id} onClick={addToCart}>Add to cart</button>
+                      <button className='add-to-wish' id={wsh.id} onClick={removeFromWishList}>Remove</button>
+                     </div>
+                    </div>    
+                  );
+
+                 })
+                 :
+                  <h2>Your wish list is empty</h2>
+                 }
           </div>
-          <div className='modal-footer'></div>
+          </div>
         </div>
       </div>
     </div>
@@ -846,8 +988,8 @@ const submitPhoneNumber = async (event) => {
                 </div>
           </div>
           <div className='modal-footer'>
-          <button type='button' className='mod-btn' id='mod-btn-gry' onClick={handleMod}>Back</button>
-          <button type='submit'  className='mod-btn btn-ord' id='mod-btn-grn' onClick={handleConfirmOrder}>Confirm Order</button>
+            <button type='button' className='mod-btn' id='mod-btn-gry' onClick={handleMod}>Back</button>
+            <button type='submit'  className='mod-btn btn-ord' id='mod-btn-grn' onClick={handleConfirmOrder}>Confirm Order</button>
           </div>
         </div>
       </div>
@@ -863,7 +1005,7 @@ const submitPhoneNumber = async (event) => {
                   <span id='fnlprc'>0.00 KES</span>
                 </div>
                 <div className='modal-total'> 
-                  <p>Discount (Offer)</p>
+                  <p>Discount/Coupons</p>
                   <span style={{color: 'green'}} id='disoff'>0.00</span>
                 </div>
                 <div className='modal-total'>
@@ -873,27 +1015,11 @@ const submitPhoneNumber = async (event) => {
                 <h3 className='header-cart'>Payment Method</h3>
                 <div className='modal-pay'>
                  <button className='lipa'>
-                 <div>
-                 <input type='checkbox' id='chks' name='method' value='mpesa' onChange={handleChecked}/>
-                  Lipa na Mpesa
+                 <div id='codl'>
+                 <input type='checkbox' id='chks' name='method' value='cash' onChange={handleChecked}/>
+                  Cash on Delivery
                  </div> 
-                 <icons.ChevronDown onClick={handleLipa} style={{fontSize: '20px'}} />
                  </button> 
-                 <div id='payd'>
-                 <div className='mpesa'>
-                  <h3>BUY GOOD AND SERVICES</h3>
-                  <div className='pay-bill'>
-                  <input type='number' className='paybill'/>
-                  <input type='number' className='paybill'/>
-                  <input type='number' className='paybill'/>
-                  <input type='number' className='paybill'/>
-                  <input type='number' className='paybill'/>
-                  <input type='number' className='paybill'/>
-                  </div>
-                  <p>Tech Store</p>
-                  <input type='text' className='tcode' placeholder='Enter Mpesa Transaction Code' name='reference'/>
-                 </div>
-                 </div>
                 </div>
                 <div className='modal-pay' style={{marginTop: '5px'}} id='cod-pay'>
                 <button className='lipa'><div><input type='checkbox' name='method' value='cash' onChange={handleChecked}/> Cash on Delivery</div> <icons.Wallet2 style={{fontSize: '20px'}}/></button>
@@ -1184,7 +1310,26 @@ const submitPhoneNumber = async (event) => {
             <h2>MY COUPONS</h2>
           </div>
           <div className='modal-body'>
-            MY COUPONS
+          <div className='container-row' id='cart-scroll'>
+                 {!!isCoupons && isCoupons.length > 0 
+                 ? 
+                 !!isCoupons && isCoupons.map((cpns) => {
+                  
+                  return (
+                    <div className='wish-row'>
+                      <h5 style={{color: "#000"}}>My Coupon</h5>
+                     <div>
+                      <button className={cpns.isActivated === "not activated" ? "add-to-crt" : "no-crt"} id={cpns.id} onClick={activateCoupon}>Activate Kes. {cpns.coupon}</button>
+                      <h5 className={cpns.isActivated === "activated" ? "add-to-crts" : "no-crt"}>Activated</h5> 
+                     </div>
+                    </div>    
+                  );
+
+                 })
+                 :
+                  <h2>Your have no coupons</h2>
+                 }
+          </div>
           </div>
           <div className='modal-footer'>
             <button type='button' className='mod-btn' id='mod-btn-gry' onClick={handleCouponClick}>Back</button>
@@ -1352,6 +1497,7 @@ const submitPhoneNumber = async (event) => {
       <form onSubmit={handleSubmitQry}>
         <div className='modal-content'>
           <div className='modal-header'>
+            <span id='qryerr-id' style={{color: 'red'}}></span> 
             <h2>Tick all that apply</h2>
           </div>
           <div className='modal-body'>
@@ -1398,10 +1544,10 @@ const submitPhoneNumber = async (event) => {
     </div>
           </div>
           <div className='modal-footer'>
+          <button type='submit' className='mod-btn' id='mod-btn-grn'>Submit</button>
           <button type='button' className='mod-btn' id='mod-btn-gry' onClick={handlePwoClick}>Back</button>
-          <button type='submit'  className='mod-btn btn-ord' id='mod-btn-grn'>Submit</button>
           </div>       
-        </div>
+        </div> 
       </form>
       </div>
     </div>
@@ -1411,6 +1557,7 @@ const submitPhoneNumber = async (event) => {
       <form onSubmit={handleSubmitSuggestions}>
         <div className='modal-content'>
           <div className='modal-header'>
+            <span id='err-id' style={{color: 'red'}}></span> 
             <h2>Tick all that apply</h2>
           </div>
           <div className='modal-body'>
@@ -1445,8 +1592,8 @@ const submitPhoneNumber = async (event) => {
           </div>
           </div>
           <div className='modal-footer'>
-          <button type='button' className='mod-btn' id='mod-btn-gry' onClick={handleSuggestionClick}>Back</button>
-          <button type='submit'  className='mod-btn btn-ord' id='mod-btn-grn'>Submit</button>
+            <button type='submit' className='mod-btn' id='mod-btn-grn'>Submit</button>
+            <button type='button' className='mod-btn' id='mod-btn-gry' onClick={handleSuggestionClick}>Back</button>
           </div>       
         </div>
       </form>
@@ -1527,7 +1674,8 @@ const submitPhoneNumber = async (event) => {
     </div>
     </div>
     </div>
-  )
+  );
+
 }
 
 export default Header

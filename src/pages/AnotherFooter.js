@@ -5,9 +5,9 @@ import './AnotherFooter.css';
 
 const AnotherFooter = () => {
   return (
-    <footer className="footers">
-      <div className="footer-container">
-        <div className="footer-section">
+    <div className="footers">
+      <div className="footer-containers">
+        <div className="footer-section"> 
           <h4>Quick Links</h4>
           <ul>
             <li><Link to="/about">About Us</Link></li>
@@ -35,7 +35,7 @@ const AnotherFooter = () => {
       <div className="footer-bottom">
         <p>&copy; {new Date().getFullYear()} OnlineStore. All rights reserved.</p>
       </div>
-    </footer>
+    </div>
   );
 };
 

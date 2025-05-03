@@ -4,48 +4,31 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import { addDoc, collection, doc, getDoc} from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '../firebase'
 import { toast } from 'react-toastify'
 import { UserContext } from '../context/UserContext'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import {Link, useNavigate, useParams } from 'react-router-dom'
 import * as icons from 'react-bootstrap-icons'
 import $ from 'jquery'
 import back_ground from '../images/back_ground.png'
-import Loading_icon from '../images/Loading_icon.gif'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+import AnotherFooter from './AnotherFooter'
 
 const DirectedProduct = () => {
+  const {id} = useParams()
   const {user} = useContext(UserContext)
   const [newPrdt, setNewPrdt] = useState([])
-  const location = useLocation();
-  const [myCat, setMyCat] = useState([])
+  const [isCat, setIsCat] = useState([])
   const navigate = useNavigate()
 
-
-  const fetchProductList = async () => {
-    const catRef = doc(db, "productlink", user.userid);
-    const catSnap = await getDoc(catRef);
-
-    if(catSnap.exists()){
-      setMyCat(catSnap.data().prdid)
-      console.log(myCat)
-    }else{
-      location('/dashboard')
-    }
-  }
-
-  useEffect(() => {
-    fetchProductList();
-  });
-
-
  async function fetchNewProducts () {
-      const colRef = doc(db, "products", myCat.toString())
+      const colRef = doc(db, "products", id)
       const catSnap = await getDoc(colRef);
 
     if(catSnap.exists()){
       setNewPrdt(catSnap.data())
-      console.log(catSnap.data())
     }else{
         setNewPrdt([])
     }
@@ -66,9 +49,9 @@ const DirectedProduct = () => {
   */
 
   const addToCart = async () => {
-    //console.log(eve.target.id)
-      const colRef = doc(db, "products", myCat.toString());
+      const colRef = doc(db, "products", id);
       const docSnap = await getDoc(colRef);
+
       if(docSnap.exists()){
         await addDoc(collection(db, 'cart'), {
                       cartdata : docSnap.data(),
@@ -85,13 +68,7 @@ const DirectedProduct = () => {
       }
   }
 
-  const currentYear = () => {
-    const da_te = new Date()
-    const curr_yr = da_te.getFullYear();
-    return curr_yr;
-  }
 
-/*
   const fetchCategories = async () => {
     const colRef = collection(db, "products")
     await onSnapshot(colRef, (snapShot) => {
@@ -106,8 +83,8 @@ const DirectedProduct = () => {
 
   useEffect( () => {
     fetchCategories();
-  }, [searchedPrdt]);
-*/
+  }, []);
+
 
 const toggleCategory = () => {
   $('#myCateg').animate({
@@ -115,9 +92,10 @@ const toggleCategory = () => {
   })
 }  
 
-const handleSearchs = () =>{
+const handleSearchs = () => {
   navigate('/search')
 }
+
 
   return (
     <div className='entr'>
@@ -138,10 +116,19 @@ const handleSearchs = () =>{
                  </div>    
            </nav>
      </div>
+     <div className='categ' id='myCateg'>
+           {
+             !!isCat && isCat.map((cat, ind) => {
+               return (
+                 <Link key={ind} to={{pathname: '/category/' + cat.name}} className='cat-link' id={cat.name} >{cat.name}</Link>
+               );
+             })
+           }
+      </div>
      
       <div className='screen' id='scr'>  
        <div className='backgd-img'>
-        <img src={!!back_ground ? back_ground : Loading_icon} alt='bg-img'/>
+       {!!back_ground ? <img src={back_ground} alt='bg-img'/> : <Skeleton style={{width: "100%", height: "250px"}} /> }
        </div>
        <hr/>
        <div className='prodiv'>
@@ -149,13 +136,13 @@ const handleSearchs = () =>{
           //const sPrc = parseInt(newPrdt.sprice)
           <div id='prdtdii'>
             <div className='prdt-di'>
-              <img src={newPrdt.imeg} className='ismgs' alt='_img'/>
+              {!!newPrdt.imeg ? <img src={newPrdt.imeg} className='ismgs' alt='_img'/> : <Skeleton style={{width: "400px", height: "300px"}} /> }
               <div>
-              <span>{newPrdt.name}</span>
+              <span style={{fontSize: "30px", fontWeight: "bold"}}>{newPrdt.name || <Skeleton style={{width: "200px", height: "20px"}} />}</span>
               <br/><br/>
-              <h5>Description</h5>
-              <i>{newPrdt.description}</i>
-              <p style={{fontSize: '12px'}}>{parseInt(newPrdt.sprice).toLocaleString()} KES</p>
+              <h4>Description</h4>
+              <i>{newPrdt.description || <Skeleton style={{width: "200px", height: "20px"}} /> }</i>
+              <p style={{fontSize: '14px'}}>{newPrdt.sprice ? parseInt(newPrdt.sprice).toLocaleString() : 0.00} KES</p>
               <br/><br/>
               <button className='add-to-scart' onClick={addToCart}>Add to Cart</button>
               </div>
@@ -164,7 +151,7 @@ const handleSearchs = () =>{
          }
        </div>
 
-       <Link to='' style={{color:'red', display: 'flex', justifyContent: 'center'}}>&copy; Copyright {currentYear()}</Link>
+       <AnotherFooter />
 
        <div id='marg'></div>
       </div>

@@ -4,23 +4,25 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import { addDoc, collection, doc, getDoc, onSnapshot, setDoc} from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '../firebase'
 import { toast } from 'react-toastify'
 import { UserContext } from '../context/UserContext'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import * as icons from 'react-bootstrap-icons'
 import $ from 'jquery'
 import back_ground from '../images/back_ground.png'
-import Loading_icon from '../images/Loading_icon.gif'
 import AnotherFooter from './AnotherFooter';
-
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const CategoryDirectedPage = () => {
   const[isCat, setIsCat] = useState([])
   const {user} = useContext(UserContext)
   const [newPrdt, setNewPrdt] = useState([])
   const [searchedPrdt, setSearchedPrdt] = useState([])
+  const navigate = useNavigate()
+  const [isLoading , setIsLoading] = useState(true)
 
   async function fetchNewProducts () {
       const colRef = collection(db, "products")
@@ -30,6 +32,7 @@ const CategoryDirectedPage = () => {
                  pro_ducts.push({...snaps.data(), id: snaps.id})
               })
           setNewPrdt(pro_ducts);
+          setIsLoading(false)
       })
   }
 
@@ -97,24 +100,15 @@ const toggleCategory = () => {
   })
 }
 
-async function handleLink(e) {
-   await setDoc(doc(db, "catlink", user.userid), {
-                                 userid : user.userid,
-                                 catlink : e.target.id
-                                   })
-                                  .then((docRef) => {
-                                     console.log('Category Found!!')
-                                   })
-                                  .catch((ers) => {
-                                   toast.error('Internal server error!')
-                                   })
+const viewMore = async (ev) => {    
+  return navigate('/product/' + ev.target.id)
 }
 
   return (
     <div className='entr'>
      <Header/>
   
-     <div className='container-fluid cls-this' id='header' style={{background:'gray'}}>
+      <div className='container-fluid cls-this' id='header' style={{background:'gray'}}>
            <nav className='navbar' id='myNavbar'>
                  <div className='navbar-logo'>
                   <h2 className='logo'>
@@ -128,23 +122,59 @@ async function handleLink(e) {
                   <input type='submit' value='Search' className='sachcon' onClick={handleSearchBtn}/>
                  </div>    
            </nav>
-     </div>
+      </div>
       <div className='categ' id='myCateg'>
            {
              !!isCat && isCat.map((cat, ind) => {
                return (
-                 <Link key={ind} to={{pathname: '/category/list'}} className='cat-link' id={cat.name} onClick={handleLink}>{cat.name}</Link>
+                 <Link key={ind} to={{pathname: '/category/' + cat.name}} className='cat-link' id={cat.name} >{cat.name}</Link>
                );
              })
            }
-     </div>
+      </div>
      
       <div className='screen' id='scr'>  
       <div className='backgd-img'>
-        <img src={!!back_ground ? back_ground : Loading_icon} alt='bg-img'/>
+      {!!back_ground ? <img src={back_ground} alt='bg-img'/> : <Skeleton style={{width: "100%", height: "250px"}} /> }
       </div>
-       <h4 className='mostvw'>Search result for : <span id='val-search'></span> </h4>
-       <div className='prodiv'>
+      <h4 className='mostvw'>Search result for : <span id='val-search'></span> </h4>
+      <div className='prodiv'>
+      {
+        isLoading 
+        &&
+        <div className="prodiv" style={{display: 'flex', justifyContext: "center", flexWrap: "wrap"}}>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+        </div>  
+       }
          {!!searchedPrdt && searchedPrdt.map((prdt) => {
           const sPrc = parseInt(prdt.sprice)
           return (
@@ -153,12 +183,49 @@ async function handleLink(e) {
               <span>{prdt.name}</span>
               <p style={{fontSize: '12px'}}>{sPrc.toLocaleString()} KES</p>
               <button className='add-to-cart' id={prdt.id} onClick={addToCart}>Add to Cart</button>
+              <button className='add-to-cart' id={prdt.id} onClick={viewMore} style={{background: '#000'}}>Read more</button>
             </div>
           );
          })}
        </div>
        <hr/>
        <div className='prodiv'>
+       {
+        isLoading 
+        &&
+        <div className="prodiv" style={{display: 'flex', justifyContext: "center", flexWrap: "wrap"}}>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+        </div>  
+       }
          {!!newPrdt && newPrdt.map((prdt) => {
           const sPrc = parseInt(prdt.sprice)
           return (
@@ -167,6 +234,7 @@ async function handleLink(e) {
               <span>{prdt.name}</span>
               <p style={{fontSize: '12px'}}>{sPrc.toLocaleString()} KES</p>
               <button className='add-to-cart' id={prdt.id} onClick={addToCart}>Add to Cart</button>
+              <button className='add-to-cart' id={prdt.id} onClick={viewMore} style={{background: '#000'}}>Read more</button>
             </div>
           );
          })}

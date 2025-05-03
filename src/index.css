@@ -449,8 +449,9 @@ overflow-y: auto;
 overflow-x: hidden;
 }
 
-.modal-header{
+.modal-header > h2{
   width: 100vw;
+  color: #fff;
 }
 
 .modal-header > h3 {
@@ -545,12 +546,14 @@ overflow-x: hidden;
   padding: 10px;
   display: flex;
   justify-content: space-between;
+  color: #000;
 }
 
 .user-cols{
   padding: 10px;
   display: flex;
   justify-content: space-around;
+  color: #000;
 }
 
 .divs {
@@ -563,8 +566,17 @@ overflow-x: hidden;
   color: #000;
 }
 
+.divs:hover{
+  text-decoration: none;
+}
+
 .divs > h3 {
   font-size: 16px;
+  color: #000;
+}
+
+.divs > p {
+  color: #000;
 }
 
 .div{
@@ -583,6 +595,10 @@ overflow-x: hidden;
 .div > h3 {
   margin-left: 10px;
   font-size: 16px;
+}
+
+.div:hover{
+  text-decoration: none;
 }
 
 #logout > .div{
@@ -1516,7 +1532,7 @@ width: 100vw;
   animation: mybell 5s infinite;
 }
 
-#fil {
+#fil{
   width: 100vw;
 }
 
@@ -1750,10 +1766,12 @@ width: 100vw;
 
 .cat-link:hover{
   opacity: 0.5;
+  text-decoration: none;
 }
 
 .cat-link:active{
   opacity: 0.5;
+  text-decoration: none;
 }
 
 #btn-ord:hover, .btn_orders:hover, .add-to-cart:hover{
@@ -2262,6 +2280,7 @@ align-items: center;
     display: flex;
     justify-content: center;
     margin: 10px;
+    flex-wrap: wrap;
   }
   .prdt-div{
      margin: 10px;

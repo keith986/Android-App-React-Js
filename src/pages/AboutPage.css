@@ -1,6 +1,6 @@
 .about-page {
     font-family: Arial, sans-serif;
-    padding: 20px;
+    padding: 0px;
     background-color: #f9f9f9;
     color: #333;
     position: absolute;
@@ -9,7 +9,6 @@
     left:0;
     right: 0;
     padding-top: 0;
-    margin-bottom: 10px;
 }
   
   .about-header {
@@ -30,10 +29,11 @@
   .about-content {
     max-width: 800px;
     margin: 0 auto;
+    padding-bottom : 50px;
   }
   
   .about-section {
-    margin-bottom: 30px;
+    margin-bottom: 50px;
   }
   
   .about-section h2 {

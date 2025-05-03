@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './FAQSPage.css';
 import Header from './Header';
 import SearchBar from './SearchBar';
+import AnotherFooter from './AnotherFooter'
 
 const FAQSPage = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -50,6 +51,7 @@ const FAQSPage = () => {
           </div>
         ))}
       </div>
+      <AnotherFooter />
     </div>
   );
 };

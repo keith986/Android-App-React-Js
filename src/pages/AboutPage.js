@@ -2,6 +2,7 @@ import React from 'react';
 import './AboutPage.css';
 import Header from './Header';
 import SearchBar from './SearchBar';
+import AnotherFooter from './AnotherFooter'
 
 const AboutPage = () => {
   return (
@@ -46,7 +47,8 @@ const AboutPage = () => {
           </ul>
         </section>
       </div>
-    </div>
+    <AnotherFooter />
+    </div> 
   );
 };
 

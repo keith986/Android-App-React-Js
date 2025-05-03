@@ -1,14 +1,12 @@
-import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore'
-import React, { useContext, useEffect, useState } from 'react'
+import { collection, onSnapshot } from 'firebase/firestore'
+import React, { useEffect, useState } from 'react'
 import * as icons from 'react-bootstrap-icons'
 import { db } from '../firebase'
 import { Link, useNavigate } from 'react-router-dom'
 import $ from 'jquery'
-import { toast } from 'react-toastify'
-import { UserContext } from '../context/UserContext'
 
 const SearchBar = () => {
-  const {user} = useContext(UserContext)
+  
   const [isCat, setIsCat] = useState([])
   const navigate = useNavigate();
     const fetchCategories = async () => {
@@ -36,18 +34,6 @@ const SearchBar = () => {
       navigate('/search')
     }
 
-async function handleLink(e) {
-   await setDoc(doc(db, "catlink", user.userid), {
-                                 userid : user.userid,
-                                 catlink : e.target.id
-                                   })
-                                  .then((docRef) => {
-                                     console.log('Category Found!!')
-                                   })
-                                  .catch((ers) => {
-                                   toast.error('Internal server error!')
-                                   })
-}
   return (
     <>
     <div className='container-fluid cls-this' id='header' style={{background:'gray'}}>
@@ -63,13 +49,13 @@ async function handleLink(e) {
              <div className='user-profile'>
               <input type='submit' value='Search' className='sachcon'/>
              </div>    
-       </nav>
+       </nav> 
     </div>
     <div className='categ' id='myCateg'>
       {
         !!isCat && isCat.map((cat, ind) => {
           return (
-            <Link key={ind} to={'/category/list'} className='cat-link' id={cat.name} onClick={handleLink}>{cat.name}</Link>
+            <Link key={ind} to={'/category/' + cat.name } className='cat-link'>{cat.name}</Link>
           );
         })
       }

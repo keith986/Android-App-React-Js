@@ -1047,7 +1047,7 @@ const submitPhoneNumber = async (event) => {
                         <p>My Orders</p>
                     </Link>
                     <Link onClick={handleCouponClick} className='divs'>
-                        <icons.CardText className='cart-icon'/>
+                        <icons.CardText className='cart-icon'/> 
                         <p>Coupons</p>
                     </Link>
             </div>

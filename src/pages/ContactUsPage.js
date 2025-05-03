@@ -3,12 +3,14 @@ import './ContactUsPage.css';
 import Header from './Header';
 import SearchBar from './SearchBar';
 import * as icons from 'react-bootstrap-icons';
+import AnotherFooter from './AnotherFooter'
 
 const ContactUsPage = () => {
   return (
-    <div className='contact-page' style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+    <div className='contact-page' style={{ padding: '0px', fontFamily: 'Arial, sans-serif' }}>
        <Header/>
        <SearchBar/> 
+      <div>
       <h1>Contact Us</h1>
       <p>We'd love to hear from you! Reach out to us through any of the following channels:</p>
 
@@ -67,6 +69,9 @@ const ContactUsPage = () => {
           <icons.EnvelopePaper /> support@yourstore.com
         </a>
       </p>
+      </div>
+
+      <AnotherFooter />
     </div>
   );
 };

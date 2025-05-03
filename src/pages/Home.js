@@ -6,12 +6,11 @@ import PopularProducts from './PopularProducts'
 import Products from './Products'
 import { Navigation, Pagination, Scrollbar, A11y} from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import Loading_icon from '../images/Loading_icon.gif'
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import { addDoc, collection, doc, getDoc, limit, onSnapshot, orderBy, query, setDoc } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, limit, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { db } from '../firebase'
 import SearchBar from './SearchBar'
 import { toast } from 'react-toastify'
@@ -20,12 +19,15 @@ import { UserContext } from '../context/UserContext'
 import * as Icon from 'react-bootstrap-icons'
 import AnotherFooter from './AnotherFooter'
 import { useNavigate } from 'react-router-dom'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const Home = () => {
   const {user} = useContext(UserContext)
   const [newPrdt, setNewPrdt] = useState([])
   const [popularPrdt, setPopularPrdt] = useState([])
   const location = useNavigate();
+  const [isLoading, setIsLoading] = useState(true)
 
   async function fetchNewProducts () {
       const colRef = collection(db, "products")
@@ -35,6 +37,7 @@ const Home = () => {
                  pro_ducts.push({...snaps.data(), id: snaps.id})
               })
           setNewPrdt(pro_ducts);
+          setIsLoading(false)
       })
   }
 
@@ -81,17 +84,8 @@ const Home = () => {
                     })
   }
 
-  const viewMore = async (ev) => {
-         await setDoc(doc(db, "productlink", user.userid), {
-                                       userid : user.userid,
-                                       prdid : ev.target.id
-                                         })
-                                        .then((docRef) => {
-                                           location('/product/')
-                                         })
-                                        .catch((ers) => {
-                                         toast.error('Internal server error!')
-                                         })
+  const viewMore = async (ev) => {    
+    return location('/product/' + ev.target.id)
   }
 
   const wishList = async (ev) => {
@@ -135,13 +129,37 @@ const Home = () => {
        //onSlideChange={handleSlideChange}
     >
      <div className='row' id='row-top2'>
-            {!!newPrdt && newPrdt.length > 0
+            { 
+              isLoading 
+                &&
+                <SwiperSlide>
+                <div className='swiprslide'> 
+                <div className='swiper1'>
+                <br/>
+                <br/>
+                  <Skeleton style={{width: '300px', height: '50px'}}/>
+                  <br/>
+                  <Skeleton count={4} style={{width: '200px'}}/>
+                </div>  
+                <div className='swiper2'>
+                 <Skeleton style={{width: "300px", height: "250px"}} />
+                 <br/>
+                 <Skeleton count={2} style={{width: '200px'}}/>
+                 </div>
+                </div>
+                </SwiperSlide>
+            }
+
+            {newPrdt.length > 0
             ?
             newPrdt.map((dt, ind) => {
+
               if(dt.new !== 'Yes'){
                    return !dt;
               }
-              const sPrc = parseInt(dt.sprice)
+
+            const sPrc = parseInt(dt.sprice)
+
               return (
                 <SwiperSlide key={ind}>
                 <div className='swiprslide' key={ind}>
@@ -153,7 +171,7 @@ const Home = () => {
                 <button className='add-to-cart' id={dt.id} onClick={addToCart}>Add to Cart</button>
                 </div>
                 <div className='swiper2'>
-                <img src={!!dt.imeg ? dt.imeg : Loading_icon} className='img-s' alt='img_src' id={dt.id}/>
+                {!!dt.imeg ? <img src={ dt.imeg } className='img-s' alt='img_src' id={dt.id}/> : <Skeleton style={{width: "300px", height: "250px"}} /> }
                 <p>Price:</p>
                 <p>KES. {sPrc.toLocaleString()}</p>
                 </div>
@@ -162,7 +180,22 @@ const Home = () => {
               );
             })
             :
-            <img src={Loading_icon} className='img' alt='Loading_icon'/>
+            <SwiperSlide>
+                <div className='swiprslide'> 
+                <div className='swiper1'>
+                <br/>
+                <br/>
+                  <Skeleton style={{width: '300px', height: '50px'}}/>
+                  <br/>
+                  <Skeleton count={4} style={{width: '200px'}}/>
+                </div>  
+                <div className='swiper2'>
+                 <Skeleton style={{width: "300px", height: "250px"}} />
+                 <br/>
+                 <Skeleton count={2} style={{width: '200px'}}/>
+                 </div>
+                </div>
+                </SwiperSlide>
             }
      </div>
       </Swiper>
@@ -182,8 +215,46 @@ const Home = () => {
       <Products/>
       </div>
        <h4 className='mostvw'>Most viewed</h4>
+       {
+        isLoading 
+        &&
+        <div className="prodiv" style={{display: 'flex', justifyContext: "center", flexWrap: "wrap"}}>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+        </div>
+       }
+
        <div className='prodiv'>
-         {!!popularPrdt && popularPrdt.map((prdt) => {
+         {
+          !!popularPrdt && popularPrdt.map((prdt) => {
           const sPrc = parseInt(prdt.sprice)
           return (
             <div className='prdt-div'>
@@ -192,11 +263,48 @@ const Home = () => {
               <Icon.Heart className='fav' id={prdt.id} onClick={wishList}/>
               <p style={{fontSize: '12px'}}>{sPrc.toLocaleString()} KES</p>
               <button className='add-to-cart' id={prdt.id} onClick={addToCart}>Add to Cart</button>
+              <button className='add-to-cart' id={prdt.id} onClick={viewMore} style={{background: '#000'}}>Read more</button>
             </div>
-          );
-         })}
+          )})
+         }
        </div>
        <h4 className='mostvw'>Other products</h4>
+       {
+        isLoading 
+        &&
+        <div className="prodiv" style={{display: 'flex', justifyContext: "center", flexWrap: "wrap"}}>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+        </div>
+       }
        <div className='prodiv'>
          {!!newPrdt && newPrdt.map((prdt) => {
           const sPrc = parseInt(prdt.sprice)
@@ -207,6 +315,7 @@ const Home = () => {
               <Icon.Heart className='fav' id={prdt.id} onClick={wishList}/>
               <p style={{fontSize: '12px'}}>{sPrc.toLocaleString()} KES</p>
               <button className='add-to-cart' id={prdt.id} onClick={addToCart}>Add to Cart</button>
+              <button className='add-to-cart' id={prdt.id} onClick={viewMore} style={{background: '#000'}}>Read more</button>
             </div>
           );
          })}

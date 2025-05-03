@@ -36,14 +36,43 @@ import AboutPage from './pages/AboutPage.js';
 import ContactUsPage from './pages/ContactUsPage.js';
 import FAQSPage from './pages/FAQSPage.js';
 import TermsAndConditions from './pages/TermsAndCondtions.js';
+import { SkeletonTheme } from 'react-loading-skeleton';
+import { useEffect, useState } from 'react';
+import { HashLoader } from "react-spinners";
 
 //connect to backend
 Axios.defaults.baseURL = 'http://localhost:7000/';
 Axios.defaults.withCredentials = true;
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  const override = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+    minHeight: "100vh"
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 8000)
+  }, []);
+
   return (
     <UserContextProvider> 
+    {loading ? 
+      <HashLoader
+        color={"rgb(125, 12, 120)"}
+        loading={loading}
+        cssOverride={override}
+        size={150}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />
+    : 
+
       <div className='screen'>
       <ToastContainer 
         position="top-left"
@@ -72,6 +101,7 @@ function App() {
         <AdminBar/>
       </AdminBarDirectory>
 
+      <SkeletonTheme baseColor="gray" highlightColor="silver">
       <Routes>
         <Route element={<Home/>} path='/dashboard'/>
         <Route element={<AdminDashboard/>} path='/admin'/>
@@ -91,20 +121,21 @@ function App() {
         <Route element={<Notifications/>} path='/notifications'/>
         <Route element={<Settings/>} path='/settings'/>
         <Route element={<CategoryDirectedPage/>} path='/search'/>
-        <Route element={<DirectedPage/>} path='/category/list'/>
-        <Route element={<DirectedProduct/>} path='/product/'/>
+        <Route element={<DirectedPage/>} path='/category/:name'/>
+        <Route element={<DirectedProduct/>} path='/product/:id'/>
         <Route element={<AboutPage/>} path='/about'/>
         <Route element={<ContactUsPage/>} path="/support"/>
         <Route element={<FAQSPage/>} path="/FAQs"/>
         <Route element={<TermsAndConditions/>} path="/terms-and-conditions"/>
       </Routes>  
+      </SkeletonTheme>
 
       <FooterDirectory>
        <Footer/>
       </FooterDirectory>
       </div> 
    
-      
+    }
     </UserContextProvider>
   );
 }

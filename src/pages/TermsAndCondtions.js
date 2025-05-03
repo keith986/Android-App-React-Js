@@ -2,6 +2,7 @@ import React from 'react';
 import './TermsAndConditions.css';
 import Header from './Header';
 import SearchBar from './SearchBar';
+import AnotherFooter from './AnotherFooter'
 
 const TermsAndConditions = () => {
   return ( 
@@ -42,6 +43,7 @@ const TermsAndConditions = () => {
           If you have any questions about these terms, please contact us at support@onlinestore.com.
         </p>
       </div>
+      <AnotherFooter />
     </div>
   );
 };

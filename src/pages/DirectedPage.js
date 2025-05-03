@@ -4,50 +4,39 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import { addDoc, collection, doc, getDoc, onSnapshot, setDoc,} from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '../firebase'
 import { toast } from 'react-toastify'
 import { UserContext } from '../context/UserContext'
-import { Link, useLocation } from 'react-router-dom'
+import { Link,  useParams, useNavigate } from 'react-router-dom'
 import * as icons from 'react-bootstrap-icons'
 import $ from 'jquery'
 import back_ground from '../images/back_ground.png'
-import Loading_icon from '../images/Loading_icon.gif'
 import AnotherFooter from './AnotherFooter';
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const DirectedPage = () => {
+  const {name} = useParams()
   const[isCat, setIsCat] = useState([])
   const {user} = useContext(UserContext)
   const [newPrdt, setNewPrdt] = useState([])
   const [searchedPrdt, setSearchedPrdt] = useState([])
-  const location = useLocation();
-  const [myCat, setMyCat] = useState([])
-  
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(true)
+
   async function fetchNewProducts () {
       const colRef = collection(db, "products")
       await onSnapshot(colRef, (snapShot) => {
               let pro_ducts = [];
               snapShot.docs.forEach((snaps) => {
                  pro_ducts.push({...snaps.data(), id: snaps.id})
-              })
+      })
           setNewPrdt(pro_ducts);
+          setIsLoading(false);
       })
   }
 
-  const fetchCategoryList = async () => {
-    const catRef = doc(db, "catlink", user.userid);
-    const catSnap = await getDoc(catRef);
-
-    if(catSnap.exists()){
-      setMyCat(catSnap.data().catlink)
-    }else{
-      location('/dashboard')
-    }
-  }
-
-  useEffect(() => {
-    fetchCategoryList();
-  })
 
   const handleSearchs =(ev) => {
     if(ev.target.value === ''){
@@ -121,17 +110,8 @@ const toggleCategory = () => {
   })
 }  
 
-async function handleLink(e) {
-   await setDoc(doc(db, "catlink", user.userid), {
-                                 userid : user.userid,
-                                 catlink : e.target.id
-                                   })
-                                  .then((docRef) => {
-                                     console.log('Category Found!!')
-                                   })
-                                  .catch((ers) => {
-                                   toast.error('Internal server error!')
-                                   })
+const viewMore = async (ev) => {    
+  return navigate('/product/' + ev.target.id)
 }
 
   return (
@@ -157,7 +137,7 @@ async function handleLink(e) {
            {
              !!isCat && isCat.map((cat, ind) => {
                return (
-                 <Link key={ind} to={'/category/list'} className='cat-link' id={cat.name} onClick={handleLink}>{cat.name}</Link>
+                 <Link key={ind} to={'/category/' + cat.name } className='cat-link' >{cat.name}</Link>
                );
              })
            }
@@ -165,13 +145,49 @@ async function handleLink(e) {
      
       <div className='screen' id='scr'>  
       <div className='backgd-img'>
-        <img src={!!back_ground ? back_ground : Loading_icon} alt='bg-img'/>
+        {!!back_ground ? <img src={back_ground} alt='bg-img'/> : <Skeleton style={{width: "100%", height: "250px"}} /> }
       </div>
-       <h4 className='mostvw'>{myCat}</h4>
+       <h4 className='mostvw'>{name}</h4>
        <span id='searchres'>Let us help you search for what you looking for</span>
        <div className='prodiv'>
+       {
+        isLoading 
+        &&
+        <div className="prodiv" style={{display: 'flex', justifyContext: "center", flexWrap: "wrap"}}>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+        </div>  
+       }
          {!!searchedPrdt && searchedPrdt.map((prdt) => {
-          if (prdt.cat !== myCat){
+          if (prdt.cat !== name){
              return !prdt;
           }
           const sPrc = parseInt(prdt.sprice)
@@ -181,14 +197,51 @@ async function handleLink(e) {
               <span>{prdt.name}</span>
               <p style={{fontSize: '12px'}}>{sPrc.toLocaleString()} KES</p>
               <button className='add-to-cart' id={prdt.id} onClick={addToCart}>Add to Cart</button>
+              <button className='add-to-cart' id={prdt.id} onClick={viewMore} style={{background: '#000'}}>Read more</button>
             </div>
           );
          })}
        </div>
        <hr/>
        <div className='prodiv'>
+       {
+        isLoading 
+        &&
+        <div className="prodiv" style={{display: 'flex', justifyContext: "center", flexWrap: "wrap"}}>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+          <div style={{margin: "5px"}}>
+          <Skeleton style={{width: "200px", height: "150px"}} />
+          <Skeleton count={2} style={{width: '200px'}} />
+          <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+          </div>
+        </div>
+      }
          {!!newPrdt && newPrdt.map((prdt) => {
-          if (prdt.cat !== myCat){
+          if (prdt.cat !== name){
              return !prdt;
           }
           const sPrc = parseInt(prdt.sprice)
@@ -198,7 +251,8 @@ async function handleLink(e) {
               <span>{prdt.name}</span>
               <p style={{fontSize: '12px'}}>{sPrc.toLocaleString()} KES</p>
               <button className='add-to-cart' id={prdt.id} onClick={addToCart}>Add to Cart</button>
-            </div>
+              <button className='add-to-cart' id={prdt.id} onClick={viewMore} style={{background: '#000'}}>Read more</button>
+            </div> 
           );
          })}
        </div>

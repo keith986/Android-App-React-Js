@@ -3,9 +3,9 @@
     color: #fff;
     padding: 20px 0;
     text-align: center;
-  }
+}
   
-  .footer-container {
+  .footer-containers {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
@@ -21,6 +21,10 @@
   .footer-section h4 {
     margin-bottom: 10px;
     font-size: 18px;
+  }
+
+  .footers p {
+    color: #fff;
   }
   
   .footer-section ul {

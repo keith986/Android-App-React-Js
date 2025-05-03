@@ -7,6 +7,8 @@ import { addDoc, collection, doc, getDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '../firebase'
 import { toast } from 'react-toastify'
 import {UserContext} from '../context/UserContext'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const Categories = () => {
     const {user} = useContext(UserContext)
@@ -17,6 +19,7 @@ const Categories = () => {
     const [catId, setCatId] = useState('') 
     const [isModals, setIsModals] = useState(false)
     const [viewPrdt, setViewPrdt] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     async function fetchProducts () {
       const colRef = collection(db, "products")
@@ -34,7 +37,7 @@ const Categories = () => {
             width: 'toggle'
         }, 100);
         setTimeout(() => {
-        navigate('/');
+        navigate('/dashboard');
         }, 500)
     } 
 
@@ -63,6 +66,7 @@ const Categories = () => {
                  products_cat.push({...snaps.data(), id: snaps.id})
               })
           setIsCat(products_cat);
+          setIsLoading(false)
       })
     }
 
@@ -108,7 +112,7 @@ const Categories = () => {
     </Link>
      </div>
  
-    <div className={isModals ? 'open-modal' : 'close-modal'} style={{zIndex: '10000'}}>
+    <div className={isModals ? 'open-modal' : 'close-modal'} style={{zIndex: '30000'}}>
     <div className='modal-content'>
           <div className='back-bg'>
             <Link onClick={handleCloseModal}>
@@ -119,7 +123,7 @@ const Categories = () => {
           <div className='modal-header'>
           <h1>{viewPrdt.name}</h1>
             <img src={!!viewPrdt ? viewPrdt.imeg : Loading_icon} alt='alt_product' id='alimgs'/>
-            </div>  
+            </div> 
             <p>{viewPrdt.description}</p>
             <span style={{margin: '20px'}}></span> 
           </div>
@@ -136,8 +140,7 @@ const Categories = () => {
       </Link> 
       </div>
       <div className='modal-body'>
-      {!!Prdt && Prdt.length > 0
-      ?
+      {
        Prdt.map((dt) => {
         if(dt.cat !== catId){
           return !dt;
@@ -152,27 +155,45 @@ const Categories = () => {
             </div>
           );
       })
-      :
-      <img src={Loading_icon} className='img' alt='Loading_icon'/>
       }
       </div>
     </div>
 
      <div className='container-row' style={{marginTop: '10%'}}> 
      {
-      !!isCat && isCat.length > 0
-       ? 
+      isLoading 
+      &&
+                              <div className="prodiv" style={{display: 'flex', justifyContext: "center", flexWrap: "wrap", }}>
+                                 <div style={{margin: "5px"}}>
+                                 <Skeleton circle style={{width: "150px", height: "150px"}} />
+                                 </div>
+                                 <div style={{margin: "5px"}}>
+                                 <Skeleton circle style={{width: "150px", height: "150px"}} />
+                                 </div>
+                                 <div style={{margin: "5px"}}>
+                                 <Skeleton circle style={{width: "150px", height: "150px"}} />
+                                 </div>
+                                 <div style={{margin: "5px"}}>
+                                 <Skeleton circle style={{width: "150px", height: "150px"}} />
+                                 </div>
+                                 <div style={{margin: "5px"}}>
+                                 <Skeleton circle style={{width: "150px", height: "150px"}} />
+                                 </div>
+                                 <div style={{margin: "5px"}}>
+                                 <Skeleton circle style={{width: "150px", height: "150px"}} />
+                                 </div>
+                              </div>
+     }
+     {
       isCat.map((cat) => {
           return (
-            <Link className='row-colss' onClick={handleModal} id={cat.name}>
+            <Link className='row-colss' onClick={handleModal} id={cat.name} style={{zIndex: '1000'}}> 
                 <h3 id={cat.name}>{cat.name}</h3>
                 <icons.ColumnsGap className='rw-icon' id={cat.name}/>
             </Link>
           );
       })
-       :
-      <img src={Loading_icon} className='img' alt='Loading_icon'/>
-      }
+     }
      </div>
 
     </div>

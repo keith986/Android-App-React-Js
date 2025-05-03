@@ -6,6 +6,8 @@ import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import * as icons from 'react-bootstrap-icons'
 import {UserContext} from '../context/UserContext'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const PopularProducts = () => {
   
@@ -13,6 +15,7 @@ const PopularProducts = () => {
   const [popularPrdt, setPopularPrdt] = useState([])
   const [isModal, setIsModal] = useState(false)
   const [viewPrdt, setViewPrdt] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   async function fetchPopularProducts () {
     const colRef = collection(db, "products")
@@ -23,6 +26,7 @@ const PopularProducts = () => {
                pro_ducts.push({...snaps.data(), id: snaps.id})
             })
         setPopularPrdt(pro_ducts);
+        setIsLoading(false);
     })
   }
 
@@ -84,9 +88,29 @@ const handleCloseModal = () => {
     </div>
 
         <div className='row' id='rw-top'>     
-        {!!popularPrdt && popularPrdt.length > 0
-        ?
-         popularPrdt.map((dt) => {
+                  {
+                    isLoading 
+                    &&
+                    <div className="prodiv" style={{display: 'flex', justifyContext: "center", flexDirection: "row"}}>
+                      <div style={{margin: "5px"}}>
+                      <Skeleton style={{width: "200px", height: "150px"}} />
+                      <Skeleton count={2} style={{width: '200px'}} />
+                      <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+                      </div>
+                      <div style={{margin: "5px"}}>
+                      <Skeleton style={{width: "200px", height: "150px"}} />
+                      <Skeleton count={2} style={{width: '200px'}} />
+                      <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+                      </div>
+                      <div style={{margin: "5px"}}>
+                      <Skeleton style={{width: "200px", height: "150px"}} />
+                      <Skeleton count={2} style={{width: '200px'}} />
+                      <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+                      </div>
+                    </div>
+                  }
+        {
+        popularPrdt.map((dt) => {
           const sPrc = parseInt(dt.sprice)
           return (
             <div className='row-col'>
@@ -97,8 +121,6 @@ const handleCloseModal = () => {
             </div>
           );
         })
-        :
-        <img src={Loading_icon} className='img' alt='Loading_icon'/>
         }
         </div>
     </div>

@@ -195,7 +195,7 @@ const Home = () => {
                  <Skeleton count={2} style={{width: '200px'}}/>
                  </div>
                 </div>
-                </SwiperSlide>
+            </SwiperSlide>
             }
      </div>
       </Swiper>
@@ -269,7 +269,7 @@ const Home = () => {
          }
        </div>
        <h4 className='mostvw'>Other products</h4>
-       {
+       {     
         isLoading 
         &&
         <div className="prodiv" style={{display: 'flex', justifyContext: "center", flexWrap: "wrap"}}>

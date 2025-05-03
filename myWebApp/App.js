@@ -1,21 +1,21 @@
-//import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 export default function App() {
   return (
     <>
+    <View style={styles.container}></View>
       <WebView
-        source={{ uri: 'https://onmystore.netlify.app/' }}
+        source={{ uri: 'https://myonstore.netlify.app/' }}
       />
+    <View style={styles.container}></View>
       </>
   );
 }
 
-/*
-<View style={styles.container}></View>
 const styles = StyleSheet.create({
   container: {
-    height: "0"
+    height: "35"
   }
 });
-*/
+

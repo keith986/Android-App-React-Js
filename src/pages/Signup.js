@@ -160,7 +160,7 @@ const Signup = () => {
          <h1>NEW ACCOUNT!</h1>
          <button type='button' className='sigb-btn' id='sgn-google' onClick={handleGoogleSignUp}>Sign up with Google</button>
          <div className='log-div'>
-         <input type='text' className='username' placeholder='create a username' name='username' required  onChange={handleChange} />
+           <input type='text' className='username' placeholder='create a username' name='username' required  onChange={handleChange} />
            <input type='email' className='email' placeholder='enter your email address' name='email' required  onChange={handleChange} />
            <PhoneInput country={'ke'} name='phone' onChange={handlePhoneChange} />
            <input type='password' className='password' placeholder='create your password' name='password' required  onChange={handleChange} />

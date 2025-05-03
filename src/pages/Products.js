@@ -6,12 +6,15 @@ import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import * as icons from 'react-bootstrap-icons'
 import {UserContext} from '../context/UserContext'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const Products = () => {
   const {user} = useContext(UserContext)
   const [Prdt, setPrdt] = useState([])
   const [isModal, setIsModal] = useState(false)
   const [viewPrdt, setViewPrdt] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   async function fetchProducts () {
     const colRef = collection(db, "products")
@@ -21,6 +24,7 @@ const Products = () => {
                pro_ducts.push({...snaps.data(), id: snaps.id})
             })
         setPrdt(pro_ducts);
+        setIsLoading(false)
     })
   }
 
@@ -67,11 +71,11 @@ const handleCloseModal = () => {
              <icons.ChevronRight className='back'/>
             </Link> 
           </div>
-          <div className='modal-body'>
+          <div className='modal-body' id='mmod'>
           <div className='modal-header'>
           <h1>{viewPrdt.name}</h1>
             <img src={!!viewPrdt ? viewPrdt.imeg : Loading_icon} alt='alt_product' id='alimgs'/>
-            </div>  
+          </div>  
             <p>{viewPrdt.description}</p>
             <span style={{margin: '20px'}}></span> 
           </div>
@@ -82,8 +86,33 @@ const handleCloseModal = () => {
     </div>
 
       <div className='container-rowss'>
-      {!!Prdt && Prdt.length > 0
-      ?
+                       {
+                         isLoading 
+                         &&
+                         <div className="prodiv" style={{display: 'flex', justifyContext: "center", flexWrap: "wrap"}}>
+                           <div style={{margin: "5px"}}>
+                           <Skeleton style={{width: "150px", height: "150px"}} />
+                           <Skeleton count={2} style={{width: '150px'}} />
+                           <Skeleton count={2} style={{width: '150px', paddingTop: "20px"}} />
+                           </div>
+                           <div style={{margin: "5px"}}>
+                           <Skeleton style={{width: "150px", height: "150px"}} />
+                           <Skeleton count={2} style={{width: '150px'}} />
+                           <Skeleton count={2} style={{width: '150px', paddingTop: "20px"}} />
+                           </div>
+                           <div style={{margin: "5px"}}>
+                           <Skeleton style={{width: "150px", height: "150px"}} />
+                           <Skeleton count={2} style={{width: '150px'}} />
+                           <Skeleton count={2} style={{width: '150px', paddingTop: "20px"}} />
+                           </div>
+                           <div style={{margin: "5px"}}>
+                           <Skeleton style={{width: "150px", height: "150px"}} />
+                           <Skeleton count={2} style={{width: '150px'}} />
+                           <Skeleton count={2} style={{width: '150px', paddingTop: "20px"}} />
+                           </div>
+                         </div>
+                       }
+      {
        Prdt.map((dt) => {
         const sPrc = parseInt(dt.sprice)
           return (
@@ -95,8 +124,6 @@ const handleCloseModal = () => {
             </div>
           );
       })
-      :
-      <img src={Loading_icon} className='img' alt='Loading_icon'/>
       }
       </div>
 

@@ -25,7 +25,7 @@ const Cart = () => {
         });
 
         setTimeout(() => {
-          navigate('/')
+          navigate('/dashboard')
         })
     } 
 
@@ -53,12 +53,10 @@ const Cart = () => {
     async function fetchCartId(){
       const colRef = collection(db, 'cart')
       await onSnapshot(colRef, (snapshot) => {
-        let cartID = [];
-    
+        let cartID = [];  
         snapshot.docs.forEach((doces) => {
           cartID.push({...doces.data(), id: doces.id}); 
-        })
-       
+        })  
         setIsCartID(cartID)
       })
     }

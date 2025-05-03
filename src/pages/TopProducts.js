@@ -6,12 +6,15 @@ import { Link } from 'react-router-dom'
 import * as icons from 'react-bootstrap-icons'
 import Loading_icon from '../images/Loading_icon.gif'
 import {UserContext} from '../context/UserContext'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const TopProducts = () => {
   const {user} = useContext(UserContext)
   const [newPrdt, setNewPrdt] = useState([])
   const [isModal, setIsModal] = useState(false)
   const [viewPrdt, setViewPrdt] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   async function fetchNewProducts () {
     const colRef = collection(db, "products")
@@ -21,6 +24,7 @@ const TopProducts = () => {
                pro_ducts.push({...snaps.data(), id: snaps.id})
             })
         setNewPrdt(pro_ducts);
+        setIsLoading(false)
     })
   }
 
@@ -76,14 +80,34 @@ const TopProducts = () => {
             <span style={{margin: '20px'}}></span> 
           </div>
           <div className='modal-footer'>
-          <button type='submit'  className='mod-btn' id={viewPrdt.id} onClick={addToCart}>Add to cart</button>
+            <button type='submit'  className='mod-btn' id={viewPrdt.id} onClick={addToCart}>Add to cart</button>
           </div>
     </div>
     </div>
 
     <div className='row' id='row-top2'>
-        {!!newPrdt && newPrdt.length > 0
-        ?
+          {
+            isLoading 
+            &&
+            <div className="prodiv" style={{display: 'flex', justifyContext: "center", flexDirection: "row"}}>
+              <div style={{margin: "5px"}}>
+              <Skeleton style={{width: "200px", height: "150px"}} />
+              <Skeleton count={2} style={{width: '200px'}} />
+              <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+              </div>
+              <div style={{margin: "5px"}}>
+              <Skeleton style={{width: "200px", height: "150px"}} />
+              <Skeleton count={2} style={{width: '200px'}} />
+              <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+              </div>
+              <div style={{margin: "5px"}}>
+              <Skeleton style={{width: "200px", height: "150px"}} />
+              <Skeleton count={2} style={{width: '200px'}} />
+              <Skeleton count={2} style={{width: '200px', paddingTop: "20px"}} />
+              </div>
+            </div>
+          }
+        {
          newPrdt.map((dt) => {
           if(dt.new !== 'Yes'){
                return !dt;
@@ -98,8 +122,6 @@ const TopProducts = () => {
             </div>
           );
         })
-        :
-        <img src={Loading_icon} className='img' alt='Loading_icon'/>
         }
     </div>
   

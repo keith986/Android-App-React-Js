@@ -62,7 +62,6 @@ provider.setCustomParameters({
   prompt : "select_account"
 }); 
 const handleGoogleSignIn = async () => {
-
   await signInWithPopup(auth, provider)
         .then((result) => {
           const user_p = result.user;
@@ -75,8 +74,7 @@ const handleGoogleSignIn = async () => {
                               setTimeout(() => {
                                 navigate('/admin')
                               }, 5000)
-                           }else{
-                            
+                           }else{                          
                             setDoc(doc(db, "customers", user_p.uid), {
                               userid: user_p.uid,
                               username: user_p.displayName,
@@ -105,9 +103,8 @@ const handleGoogleSignIn = async () => {
                            }
          })
         .catch((error) => {
-    toast.error(error.message)
+          toast.error(error.message)
          });
-
 }
 
   return (

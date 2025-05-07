@@ -5,11 +5,9 @@ export default function App() {
   return (
     <>
     <View style={styles.container}></View>
-      <WebView
-        source={{ uri: 'https://myonstore.netlify.app/' }}
-      />
+    <WebView source={{url: "https://myonstore.netlify.app/"}} />
     <View style={styles.container}></View>
-      </>
+    </>
   );
 }
 
@@ -18,4 +16,3 @@ const styles = StyleSheet.create({
     height: "35"
   }
 });
-

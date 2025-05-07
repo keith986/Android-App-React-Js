@@ -653,7 +653,6 @@ const submitPhoneNumber = async (event) => {
                     .then((resp) => {
                       toast.success('Successfully logged out')
                       navigate('/login')
-                      window.location.reload();
                     })
                     .catch((errs) => {
                       toast.error('Could not log out!')

@@ -15,8 +15,7 @@ const AdminBar = () => {
     await auth.signOut()
               .then((res) => {
                 toast.success('Successfully logged out') 
-                navigate('/login')
-                window.location.reload();  
+                navigate('/login');
               })
               .catch((ers) => {
                 toast.error('Internal server error!')

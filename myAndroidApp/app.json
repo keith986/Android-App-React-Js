@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "myWebApp",
-    "slug": "myWebApp",
+    "name": "myAndroidApp",
+    "slug": "myAndroidApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

@@ -7,7 +7,7 @@ const FooterDirectory = ({children}) => {
     const [isLocs, setIsLocs] = useState(false);
 
     useEffect(() => {
-      if(location.pathname === '/login' || location.pathname === '/signup' || location.pathname === '/' || location.pathname === '/allorders' || location.pathname === '/admin' || location.pathname === '/allusers' || location.pathname === '/allcategories' || location.pathname === '/allproducts' || location.pathname === '/verify' || location.pathname === '/allcategories' || location.pathname === '/allproducts' || location.pathname === '/cart' || location.pathname === '/categories'){
+      if(location.pathname === '/logg-in' || location.pathname === '/signup' || location.pathname === '/' || location.pathname === '/allorders' || location.pathname === '/admin' || location.pathname === '/allusers' || location.pathname === '/allcategories' || location.pathname === '/allproducts' || location.pathname === '/verify' || location.pathname === '/allcategories' || location.pathname === '/allproducts' || location.pathname === '/cart' || location.pathname === '/categories'){
             setIsLocs(false)
         }else{
             setIsLocs(true)

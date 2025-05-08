@@ -93,7 +93,7 @@ const Offers = () => {
     </Link>
     </div>
     
-    <div className={isModals ? 'open-modal' : 'close-modal'} style={{zIndex: '10000'}}>
+    <div className={isModals ? 'open-modal' : 'close-modal'} style={{zIndex: '30000'}}>
     <div className='modal-content'>
           <div className='back-bg'>
             <Link onClick={handleCloseModal}>

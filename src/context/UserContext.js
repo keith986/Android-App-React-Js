@@ -3,12 +3,13 @@ import {onAuthStateChanged } from "firebase/auth";
 import { auth, db } from '../firebase';
 //import { useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 
 export const UserContext = createContext({});
 
 export function UserContextProvider({children}) {
     const [user, setUser] = useState(null);
-    //const navigate = useNavigate()
+    const navigate = useNavigate()
 
     useEffect(() => {
         if(!user) { 
@@ -27,12 +28,12 @@ export function UserContextProvider({children}) {
                   
                 } else {
                  //User Log out
-                 //navigate('/login')
+                 navigate('/logg-in')
                  console.log('Logged out')
                 }
             });
         }
-    }, [user])
+    }, [user, navigate])
 
     return (
         <UserContext.Provider value={{user, setUser}}>

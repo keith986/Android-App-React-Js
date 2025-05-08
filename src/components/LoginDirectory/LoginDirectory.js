@@ -6,7 +6,7 @@ const LoginDirectory = ({children}) => {
     const [isLoc, setIsLoc] = useState(false);
 
     useEffect(() => {
-        if(navigate.pathname === '/login'){
+        if(navigate.pathname === '/logg-in'){
             setIsLoc(true)
         }else if(navigate.pathname === '/'){
           setIsLoc(true)

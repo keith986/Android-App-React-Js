@@ -90,7 +90,7 @@ function App() {
       <ToastContainer />
 
       <LoginDirectory>
-      <Login path='/login'/>
+      <Login path='/logg-in'/>
       </LoginDirectory>
 
       <SignupDirectory>

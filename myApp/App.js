@@ -1,11 +1,15 @@
+//import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
-import { WebView } from 'react-native-webview';
+import {WebView} from 'react-native-webview';
 
 export default function App() {
   return (
     <>
     <View style={styles.container}></View>
-    <WebView source={{url: "https://myonstore.netlify.app/"}} />
+    <WebView
+      style={styles.container}
+      source={{ uri: 'https://myonstore.netlify.app/' }}
+    />
     <View style={styles.container}></View>
     </>
   );
@@ -14,5 +18,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     height: "35"
-  }
+  },
 });
